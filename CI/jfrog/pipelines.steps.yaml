@@ -12,8 +12,8 @@ pipelines:
                 tag: master
           mvnCommand:  clean package
           sourceLocation:       complete/  #required
-          configFileLocation:   .  #required
-          configFileName:       CI/mvn-art-config  #required
+          configFileLocation:   ../CI/  #required
+          configFileName:       mvn-art-config  #required
           forceXrayScan:        false #optional
           autoPublishBuildInfo: false #optional
           inputResources:
@@ -65,28 +65,28 @@ pipelines:
             - echo ${res_back_appBuildInfo_buildNumber}
             - jfrog rt bs ${res_back_appBuildInfo_buildName} ${res_back_appBuildInfo_buildNumber} --fail=false
 
-      - name: promote_build_info_mvn_back_app
-        type: PromoteBuild
-        configuration:
-          targetRepository: app-mvn-rc-local
-          includeDependencies: false
-          status: SANDBOX_OK
-          comment: Unit testing and Xray scan passed succesfully
-          copy: false
-          inputResources:
-            - name: back_appBuildInfo
-              trigger: true
-          inputSteps:
-            - name: xray_scan_mvn_backapp
-          outputResources:
-            - name: build_info_back_app_promoted_staging
-        execution:  
-          onStart:
-            - echo ${res_back_appBuildInfo_buildName} 
-            - echo ${res_back_appBuildInfo_buildNumber} 
-          onSuccess:
-            - jfrog rt sp --build=${res_back_appBuildInfo_buildName}/${res_back_appBuildInfo_buildNumber} app-mvn-rc-local/ "app.version=${appVersion}"
-            - write_output build_info_back_app_promoted_staging myversion=${appVersion}
+      # - name: promote_build_info_mvn_back_app
+      #   type: PromoteBuild
+      #   configuration:
+      #     targetRepository: ninja-mvn-rc-local
+      #     includeDependencies: false
+      #     status: SANDBOX_OK
+      #     comment: Unit testing and Xray scan passed succesfully
+      #     copy: false
+      #     inputResources:
+      #       - name: back_appBuildInfo
+      #         trigger: true
+      #     inputSteps:
+      #       - name: xray_scan_mvn_backapp
+      #     outputResources:
+      #       - name: build_info_back_app_promoted_staging
+      #   execution:  
+      #     onStart:
+      #       - echo ${res_back_appBuildInfo_buildName} 
+      #       - echo ${res_back_appBuildInfo_buildNumber} 
+      #     onSuccess:
+      #       - jfrog rt sp --build=${res_back_appBuildInfo_buildName}/${res_back_appBuildInfo_buildNumber} app-mvn-rc-local/ "app.version=${appVersion}"
+      #       - write_output build_info_back_app_promoted_staging myversion=${appVersion}
 
   # - name: suv_003_backapp_docker_pipeline
   #   steps:
