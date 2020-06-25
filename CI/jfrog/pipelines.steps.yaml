@@ -13,7 +13,7 @@ pipelines:
           mvnCommand:  clean package
           sourceLocation:       complete/  #required
           configFileLocation:   .  #required
-          configFileName:       mvn-art-config  #required
+          configFileName:       CI/mvn-art-config  #required
           forceXrayScan:        false #optional
           autoPublishBuildInfo: false #optional
           inputResources:

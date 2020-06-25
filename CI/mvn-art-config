@@ -1,0 +1,10 @@
+version: 1
+type: maven 
+useWrapper: false
+resolver:
+  repo: ninja-mvn-dev
+  serverID: artifactory
+deployer:
+  repo: ninja-mvn-dev
+  serverID: artifactory
+  deployMavenDescriptors: true
