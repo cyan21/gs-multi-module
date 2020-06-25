@@ -12,7 +12,7 @@ pipelines:
                 tag: master
           mvnCommand:  clean package
           sourceLocation:       complete/  #required
-          configFileLocation:   ../CI/  #required
+          configFileLocation:   ../CI  #required
           configFileName:       mvn-art-config  #required
           forceXrayScan:        false #optional
           autoPublishBuildInfo: false #optional
