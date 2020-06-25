@@ -4,12 +4,12 @@ pipelines:
       - name: build_app_mvn_backend
         type: MvnBuild
         configuration: 
-          runtime:
-            type: image
-            image:
-              custom:
-                name: drydock/u18java
-                tag: master
+          # runtime:
+          #   type: image
+          #   image:
+          #     custom:
+          #       name: drydock/u18java
+          #       tag: master
           mvnCommand:  clean package
           sourceLocation:       complete/  #required
           configFileLocation:   CI  #required
