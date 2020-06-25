@@ -1,0 +1,208 @@
+pipelines:
+  - name: app_mvn_pipeline
+    steps:
+      - name: build_app_mvn_backend
+        type: MvnBuild
+        configuration: 
+          runtime:
+            type: image
+            image:
+              custom:
+                name: drydock/u18java
+                tag: master
+          mvnCommand:  clean package
+          sourceLocation:       complete/  #required
+          configFileLocation:   .  #required
+          configFileName:       mvn-art-config  #required
+          forceXrayScan:        false #optional
+          autoPublishBuildInfo: false #optional
+          inputResources:
+            - name: src_code_back_app
+          integrations:
+            - name: artifactory
+        execution:
+          onStart:
+            - echo  "Preparing for work..."
+          onSuccess:
+            - echo ${res_src_code_back_app_isGitTag}
+            - appVersion=`if [[ ${res_src_code_back_app_isGitTag} == "True" ]]; then echo ${res_src_code_back_app_gitTagName}; else echo ${res_src_code_back_app_commitSha}; fi`
+            - echo $appVersion
+            - add_pipeline_variables appVersion="${appVersion}"
+            - add_pipeline_variables subPath="${res_src_code_back_app_branchName}/${appVersion}"      
+          onFailure:
+            - echo "You Lose"
+          onComplete: #always
+            - echo "Leave it as you found it. Let's clean it"
+
+      - name: publish_backend_buildinfo
+        type: PublishBuildInfo
+        configuration:
+          inputSteps:
+            - name: build_app_mvn_backend
+          outputResources:
+            - name: back_appBuildInfo
+        execution:
+          onStart:
+            - echo "Preparing for Xray scan..."
+          onSuccess:
+            - echo build name / build number ${res_back_appBuildInfo_buildName} ${res_back_appBuildInfo_buildNumber}
+          onFailure:
+            - echo "uh oh, something went wrong"
+          onComplete: #always
+            - echo "Cleaning up some stuff"
+      
+      - name: xray_scan_mvn_backapp
+        type: Bash
+        configuration:
+          integrations:
+            - name: artifactory
+          affinityGroup: together
+          inputResources:
+            - name: back_appBuildInfo
+        execution:
+          onStart:
+            - echo ${res_back_appBuildInfo_buildName}
+            - echo ${res_back_appBuildInfo_buildNumber}
+            - jfrog rt bs ${res_back_appBuildInfo_buildName} ${res_back_appBuildInfo_buildNumber} --fail=false
+
+      - name: promote_build_info_mvn_back_app
+        type: PromoteBuild
+        configuration:
+          targetRepository: app-mvn-rc-local
+          includeDependencies: false
+          status: SANDBOX_OK
+          comment: Unit testing and Xray scan passed succesfully
+          copy: false
+          inputResources:
+            - name: back_appBuildInfo
+              trigger: true
+          inputSteps:
+            - name: xray_scan_mvn_backapp
+          outputResources:
+            - name: build_info_back_app_promoted_staging
+        execution:  
+          onStart:
+            - echo ${res_back_appBuildInfo_buildName} 
+            - echo ${res_back_appBuildInfo_buildNumber} 
+          onSuccess:
+            - jfrog rt sp --build=${res_back_appBuildInfo_buildName}/${res_back_appBuildInfo_buildNumber} app-mvn-rc-local/ "app.version=${appVersion}"
+            - write_output build_info_back_app_promoted_staging myversion=${appVersion}
+
+  # - name: suv_003_backapp_docker_pipeline
+  #   steps:
+  #     - name: build_docker_backapp
+  #       type: DockerBuild
+  #       configuration:
+  #         affinityGroup: swampup
+  #         dockerFileName: jfrog-Dockerfile
+  #         dockerFileLocation: back/CI/Docker/
+  #         dockerImageName: '${ArtIP}/app-docker-virtual/backapp'
+  #         dockerImageTag: '${res_build_info_back_app_promoted_staging_myversion}-${res_src_dockerfile_back_app_commitSha}'
+  #         inputResources:
+  #           - name: src_dockerfile_back_app
+  #           - name: build_info_back_app_promoted_staging
+  #           - name: docker_Framework_BuildInfo_Promoted
+  #           - name: back_app_exec
+  #         integrations:
+  #           - name: artifactory
+  #           - name: docker_registry
+  #       execution:
+  #         onStart:
+  #           - 'export ArtIP=$(echo ${int_artifactory_url}|awk -F ''/'' ''{print $3}'')'
+  #           - echo ${res_build_info_back_app_promoted_staging_myversion}
+  #           - add_pipeline_variables appVersion="${res_build_info_back_app_promoted_staging_myversion}"
+  #           - echo $triggerBuildInfoName
+  #           - echo $triggerBuildInfoNumber
+  #           - add_pipeline_variables triggerBuildInfoName="${res_build_info_back_app_promoted_staging_buildName}"
+  #           - add_pipeline_variables triggerBuildInfoNumber="${res_build_info_back_app_promoted_staging_buildNumber}"
+  #           - echo $triggerBuildInfoName
+  #           - echo $triggerBuildInfoNumber
+  #           #- echo "items.find({\"@build.name\":\"${triggerBuildInfoName}\",\"@build.number\":\"${triggerBuildInfoNumber}\"}).include(\"@app.version\")" > aql.json
+  #           #- cat aql.json
+  #           #- jfrog rt curl -XPOST api/search/aql -T aql.json
+  #           #- appVersion=`jfrog rt curl -XPOST api/search/aql -T aql.json | jq --raw-output .results[].properties[].value`
+  #           #- echo $appVersion
+  #           #- add_pipeline_variables appVersion="${appVersion}" 
+  #           - echo ${appVersion}
+  #           - echo $triggerBuildInfoName
+  #           - echo ${triggerBuildInfoNumber}
+  #           #####################################
+  #           - echo ${res_back_app_exec_resourcePath}
+  #           - echo "Gradle App Build number :" 
+  #           - echo ${triggerBuildInfoNumber}
+  #           - echo "Webservice App version :" 
+  #           - echo ${appVersion} 
+  #           - echo "Git repo hash :" 
+  #           - echo ${res_src_dockerfile_back_app_commitSha}
+  #           - echo "Copying exec binary to specific location..." && ls -l
+  #           - echo "Filespec location :" && echo ${res_back_app_exec_resourcePath} && ls -l ${res_back_app_exec_resourcePath}
+  #           #- cp ${res_back_app_exec_resourcePath}/back* ${res_src_dockerfile_back_app_resourcePath}/back/CI/Docker/
+  #           #- cd ${res_src_dockerfile_back_app_resourcePath}/back/CI/Docker/
+  #           #- tar xvf back*.tgz
+  #           #- ls -l ${res_src_dockerfile_back_app_resourcePath}/back/CI/Docker
+  #           - echo $appVersion
+  #           - sed -i "s/registry/${ArtIP}/g" ${res_src_dockerfile_back_app_resourcePath}/back/CI/Docker/jfrog-Dockerfile
+  #           - add_pipeline_variables myDockerTag="${appVersion}-${res_src_dockerfile_back_app_commitSha}"
+  #         onSuccess:
+  #           - echo "Job well done!"
+
+  #     - name: publish_docker_backapp
+  #       type: DockerPush
+  #       configuration:
+  #         affinityGroup: swampup
+  #         targetRepository: app-docker-virtual
+  #         autoPublishBuildInfo: true
+  #         inputSteps:
+  #           - name: build_docker_backapp
+  #         integrations:
+  #           - name: artifactory
+  #         outputResources:
+  #           - name: build_info_docker_backapp
+  #       execution:
+  #         onSuccess:
+  #           - echo "Job well done!"
+  #           - echo $appVersion
+
+  #     - name: xray_scan_docker_build_info_backapp
+  #       type: Bash
+  #       configuration:
+  #         integrations:
+  #           - name: artifactory
+  #         affinityGroup: swampup
+  #         inputResources:
+  #           - name: build_info_docker_backapp
+  #       execution:
+  #         onStart:
+  #           - echo ${res_build_info_docker_backapp_buildName}
+  #           - echo ${res_build_info_docker_backapp_buildNumber}
+  #           - jfrog rt bs ${res_build_info_docker_backapp_buildName} ${res_build_info_docker_backapp_buildNumber} --fail=false
+
+  #     - name: promoting_docker_build_info_backapp
+  #       type: PromoteBuild
+  #       configuration:
+  #         affinityGroup: swampup
+  #         targetRepository: app-docker-rc-local
+  #         includeDependencies: false
+  #         status: "DOCKER_SCAN_OK"
+  #         comment: "Xray scan passed succesfully"
+  #         copy: false
+  #         integrations:
+  #           - name: artifactory
+  #         inputResources:
+  #           - name: build_info_docker_backapp
+  #             trigger: true
+  #         inputSteps:
+  #           - name: xray_scan_docker_build_info_backapp
+  #         outputResources:
+  #           - name: build_info_docker_backapp_promoted_staging
+  #       execution:
+  #         onStart:
+  #           - 'export ArtIP=$(echo ${int_artifactory_url}|awk -F ''/'' ''{print $3}'')'
+  #           - echo ${res_build_info_docker_backapp_buildName}
+  #           - echo ${res_build_info_docker_backapp_buildNumber}
+  #           - jfrog rt cp --build=${res_build_info_docker_backapp_buildName}/${res_build_info_docker_backapp_buildNumber} app-docker-dev-local/ app-docker-rc-local/
+  #         onSuccess:
+  #           - jfrog rt sp --build=${res_build_info_docker_backapp_buildName}/${res_build_info_docker_backapp_buildNumber} app-docker-rc-local/**/manifest.json "docker.tag=${myDockerTag}"
+  #           - write_output build_info_docker_backapp_promoted_staging "backregistry=\"${ArtIP}/app-docker-virtual\""
+  #           - write_output build_info_docker_backapp_promoted_staging "backimage=\"backapp\""
+  #           - write_output build_info_docker_backapp_promoted_staging "backtag=${myDockerTag}"
