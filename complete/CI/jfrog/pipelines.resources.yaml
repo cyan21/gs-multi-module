@@ -6,7 +6,7 @@ resources:
     configuration:
       files:
         include: ^complete\/.+
-        exclude: ^CI\/.+
+        exclude: ^complete\/CI\/.+
       gitProvider: ych_github
       path: cyan21/gs-multi-module
       branches:
