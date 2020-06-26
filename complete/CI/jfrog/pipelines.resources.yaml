@@ -13,15 +13,15 @@ resources:
         include: jfrog
 
 # DOCKER PIPELINE
-  # - name: src_dockerfile_back_app
-  #   type: GitRepo
-  #   configuration:
-  #     files:
-  #       include: ^back\/CI\/Docker\/.+
-  #     path: HamzaZFrog/k8s-app
-  #     branches:
-  #       include: swampup2020
-  #     gitProvider: hza_github
+  - name: src_dockerfile_back_app
+    type: GitRepo
+    configuration:
+      files:
+        include: ^back\/CI\/Docker\/.+      
+      gitProvider: ych_github
+      path: cyan21/gs-multi-module
+      branches:
+        include: jfrog
 
   # Build info for the published mvn App
   - name: back_appBuildInfo
@@ -45,16 +45,14 @@ resources:
   #     buildName: back_app_mvn_pipeline
   #     buildNumber: '${run_number}'
 
-  # - name: back_app_exec
-  #   type: FileSpec
-  #   configuration:
-  #     sourceArtifactory: artifactory
-  #     #pattern: 'app-mvn-rc-local/**/webservice-*.war'
-  #     pattern: 'app-mvn-rc-local/org/jfrog/example/gradle/webservice/1.1.2/webservice-1.1.2.war'
-  #     #buildName: ${triggerBuildInfoName}
-  #     #buildNumber: ${triggerBuildInfoNumber}
-  #     target: war/webservice.war
-  #     flat: true
+  - name: back_app_exec
+    type: FileSpec
+    configuration:
+      sourceArtifactory: artifactory
+      #pattern: 'app-mvn-rc-local/**/webservice-*.war'
+      pattern: 'ninja-mvn-snapshot-local/com/example/multi-module-application/0.0.1-SNAPSHOT/multi-module-application-0.0.1-SNAPSHOT.jar'
+      target: app/multi-module-application-0.0.1-SNAPSHOT.jar
+      flat: true
 
   # - name: build_info_docker_backapp
   #   type: BuildInfo
