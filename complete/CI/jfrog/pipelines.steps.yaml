@@ -56,9 +56,11 @@ pipelines:
         configuration:
           integrations:
             - name: artifactory
-          affinityGroup: together
+#          affinityGroup: together
           inputResources:
             - name: back_appBuildInfo
+          outputResources:
+            - name: back_appBuildInfo_scanned
         execution:
           onStart:
             - echo ${res_back_appBuildInfo_buildName}
@@ -88,7 +90,7 @@ pipelines:
       #       - jfrog rt sp --build=${res_back_appBuildInfo_buildName}/${res_back_appBuildInfo_buildNumber} app-mvn-rc-local/ "app.version=${appVersion}"
       #       - write_output build_info_back_app_promoted_staging myversion=${appVersion}
 
-  # - name: suv_003_backapp_docker_pipeline
+  # - name: app_docker_pipeline
   #   steps:
   #     - name: build_docker_backapp
   #       type: DockerBuild
