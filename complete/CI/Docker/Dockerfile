@@ -4,4 +4,4 @@ FROM openjdk:14-ea-alpine3.10
 
 ADD app/*.jar multi-module-application-0.0.1-SNAPSHOT.jar
 
-CMD /bin/bash -c echo hello world
+CMD /bin/bash -c echo "hello world"
