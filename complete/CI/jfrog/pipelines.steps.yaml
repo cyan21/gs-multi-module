@@ -134,7 +134,7 @@ pipelines:
             - echo "Copying exec binary to specific location..." && ls -l
             - echo "Filespec location :" && echo ${res_back_app_exec_resourcePath} && ls -l ${res_back_app_exec_resourcePath}
             - echo $appVersion
-            - sed -i "s/registry/${ArtIP}/g" ${res_src_dockerfile_back_app_resourcePath}/back/CI/Docker/jfrog-Dockerfile
+            - sed -i "s/registry/${ArtIP}/g" ${res_src_dockerfile_back_app_resourcePath}/complete/CI/Docker/Dockerfile
             - add_pipeline_variables myDockerTag="${appVersion}-${res_src_dockerfile_back_app_commitSha}"
           onSuccess:
             - echo "Job well done!"
