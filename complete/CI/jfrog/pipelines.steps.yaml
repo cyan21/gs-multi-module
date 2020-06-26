@@ -139,36 +139,36 @@ pipelines:
           onSuccess:
             - echo "Job well done!"
 
-      # - name: publish_docker_backapp
-      #   type: DockerPush
-      #   configuration:
-      #     affinityGroup: swampup
-      #     targetRepository: ninja-docker
-      #     autoPublishBuildInfo: true
-      #     inputSteps:
-      #       - name: build_docker_backapp
-      #     integrations:
-      #       - name: artifactory
-      #     outputResources:
-      #       - name: build_info_docker_backapp
-      #   execution:
-      #     onSuccess:
-      #       - echo "Job well done!"
-      #       - echo $appVersion
+      - name: publish_docker_backapp
+        type: DockerPush
+        configuration:
+          affinityGroup: swampup
+          targetRepository: ninja-docker
+          autoPublishBuildInfo: true
+          inputSteps:
+            - name: build_docker_backapp
+          integrations:
+            - name: artifactory
+          outputResources:
+            - name: build_info_docker_backapp
+        execution:
+          onSuccess:
+            - echo "Job well done!"
+            - echo $appVersion
 
-      # - name: xray_scan_docker_build_info_backapp
-      #   type: Bash
-      #   configuration:
-      #     integrations:
-      #       - name: artifactory
-      #     affinityGroup: swampup
-      #     inputResources:
-      #       - name: build_info_docker_backapp
-      #   execution:
-      #     onStart:
-      #       - echo ${res_build_info_docker_backapp_buildName}
-      #       - echo ${res_build_info_docker_backapp_buildNumber}
-      #       - jfrog rt bs ${res_build_info_docker_backapp_buildName} ${res_build_info_docker_backapp_buildNumber} --fail=false
+      - name: xray_scan_docker_build_info_backapp
+        type: Bash
+        configuration:
+          integrations:
+            - name: artifactory
+          affinityGroup: swampup
+          inputResources:
+            - name: build_info_docker_backapp
+        execution:
+          onStart:
+            - echo ${res_build_info_docker_backapp_buildName}
+            - echo ${res_build_info_docker_backapp_buildNumber}
+            - jfrog rt bs ${res_build_info_docker_backapp_buildName} ${res_build_info_docker_backapp_buildNumber} --fail=false
 
   #     - name: promoting_docker_build_info_backapp
   #       type: PromoteBuild
