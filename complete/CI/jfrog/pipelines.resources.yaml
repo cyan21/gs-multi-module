@@ -17,7 +17,7 @@ resources:
     type: GitRepo
     configuration:
       files:
-        include: ^back\/CI\/Docker\/.+      
+        include: ^complete\/CI\/Docker\/.+      
       gitProvider: ych_github
       path: cyan21/gs-multi-module
       branches:
