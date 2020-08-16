@@ -17,15 +17,15 @@ pipelines:
           forceXrayScan:        false #optional
           autoPublishBuildInfo: false #optional
           inputResources:
-            - name: src_code_back_app
+            - name: src_code_back_app_mvn
           integrations:
             - name: artifactory
         execution:
           onStart:
             - echo  "Preparing for work..."
           onSuccess:
-            - echo ${res_src_code_back_app_isGitTag}
-            - appVersion=`if [[ ${res_src_code_back_app_isGitTag} == "True" ]]; then echo ${res_src_code_back_app_gitTagName}; else echo ${res_src_code_back_app_commitSha}; fi`
+            - echo ${res_src_code_back_app_mvn_isGitTag}
+            - appVersion=`if [[ ${res_src_code_back_app_mvn_isGitTag} == "True" ]]; then echo ${res_src_code_back_app_mvn_gitTagName}; else echo ${res_src_code_back_app_mvn_commitSha}; fi`
             - echo $appVersion
             - add_pipeline_variables appVersion="${appVersion}"
             - add_pipeline_variables subPath="${res_src_code_back_app_branchName}/${appVersion}"      
@@ -94,7 +94,7 @@ pipelines:
 
   - name: app_docker_pipeline
     steps:
-      - name: build_docker_backapp
+      - name: build_docker_backapp_mvn
         type: DockerBuild
         configuration:
           affinityGroup: swampup
@@ -146,29 +146,29 @@ pipelines:
           targetRepository: ninja-docker
           autoPublishBuildInfo: true
           inputSteps:
-            - name: build_docker_backapp
+            - name: build_docker_backapp_mvn
           integrations:
             - name: artifactory
           outputResources:
-            - name: build_info_docker_backapp
+            - name: build_info_docker_backapp_mvn
         execution:
           onSuccess:
             - echo "Job well done!"
             - echo $appVersion
 
-      - name: xray_scan_docker_build_info_backapp
+      - name: xray_scan_docker_build_info_backapp_mvn
         type: Bash
         configuration:
           integrations:
             - name: artifactory
           affinityGroup: swampup
           inputResources:
-            - name: build_info_docker_backapp
+            - name: build_info_docker_backapp_mvn
         execution:
           onStart:
-            - echo ${res_build_info_docker_backapp_buildName}
-            - echo ${res_build_info_docker_backapp_buildNumber}
-            - jfrog rt bs ${res_build_info_docker_backapp_buildName} ${res_build_info_docker_backapp_buildNumber} --fail=false
+            - echo ${res_build_info_docker_backapp_mvn_buildName}
+            - echo ${res_build_info_docker_backapp_mvn_buildNumber}
+            - jfrog rt bs ${res_build_info_docker_backapp_mvn_buildName} ${res_build_info_docker_backapp_mvn_buildNumber} --fail=false
 
   #     - name: promoting_docker_build_info_backapp
   #       type: PromoteBuild

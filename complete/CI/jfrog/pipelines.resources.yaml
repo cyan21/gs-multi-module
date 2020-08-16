@@ -1,7 +1,7 @@
 resources:
 
 # mvn PIPELINE
-  - name: src_code_back_app
+  - name: src_code_back_app_mvn
     type: GitRepo
     configuration:
       files:
@@ -13,7 +13,7 @@ resources:
         include: jfrog
 
 # DOCKER PIPELINE
-  - name: src_dockerfile_back_app
+  - name: src_dockerfile_back_app_mvn
     type: GitRepo
     configuration:
       files:
@@ -45,7 +45,7 @@ resources:
   #     buildName: back_app_mvn_pipeline
   #     buildNumber: '${run_number}'
 
-  - name: back_app_exec
+  - name: back_app_mvn
     type: FileSpec
     configuration:
       sourceArtifactory: artifactory
@@ -54,7 +54,7 @@ resources:
       target: app/multi-module-application-0.0.1-SNAPSHOT.jar
       flat: true
 
-  - name: build_info_docker_backapp
+  - name: build_info_docker_backapp_mvn
     type: BuildInfo
     configuration:
       sourceArtifactory: artifactory
