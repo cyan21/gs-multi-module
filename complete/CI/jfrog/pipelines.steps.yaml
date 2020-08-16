@@ -63,9 +63,9 @@ pipelines:
             - name: back_appBuildInfo_scanned_mvn
         execution:
           onStart:
-            - echo ${res_back_appBuildInfo_buildName}
-            - echo ${res_back_appBuildInfo_buildNumber}
-            - jfrog rt bs ${res_back_appBuildInfo_buildName} ${res_back_appBuildInfo_buildNumber} --fail=false
+            - echo ${res_back_appBuildInfo_mvn_buildName}
+            - echo ${res_back_appBuildInfo_mvn_buildNumber}
+            - jfrog rt bs ${res_back_appBuildInfo_mvn_buildName} ${res_back_appBuildInfo_mvn_buildNumber} --fail=false
             - write_output back_appBuildInfo_scanned_mvn myversion=${appVersion}
 
 
