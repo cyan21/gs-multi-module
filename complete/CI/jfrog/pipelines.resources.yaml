@@ -61,7 +61,7 @@ resources:
       buildName: back_app-docker
       buildNumber: '${run_number}'
 
-  - name: build_info_docker_backapp_scanned
+  - name: build_info_docker_backapp_scanned_mvn
     type: BuildInfo
     configuration:
       sourceArtifactory: artifactory

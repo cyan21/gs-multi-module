@@ -19,7 +19,7 @@ pipelines:
           inputResources:
             - name: src_code_back_app_mvn
           integrations:
-            - name: artifactory
+            - name: artifactory_eu
         execution:
           onStart:
             - echo  "Preparing for work..."
@@ -28,7 +28,7 @@ pipelines:
             - appVersion=`if [[ ${res_src_code_back_app_mvn_isGitTag} == "True" ]]; then echo ${res_src_code_back_app_mvn_gitTagName}; else echo ${res_src_code_back_app_mvn_commitSha}; fi`
             - echo $appVersion
             - add_pipeline_variables appVersion="${appVersion}"
-            - add_pipeline_variables subPath="${res_src_code_back_app_branchName}/${appVersion}"      
+            - add_pipeline_variables subPath="${res_src_code_back_app_mvn_branchName}/${appVersion}"      
           onFailure:
             - echo "You Lose"
           onComplete: #always
@@ -40,7 +40,7 @@ pipelines:
           inputSteps:
             - name: build_app_mvn_backend
           outputResources:
-            - name: back_appBuildInfo
+            - name: back_appBuildInfo_mvn
         execution:
           onStart:
             - echo "Preparing for Xray scan..."
@@ -55,7 +55,7 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: artifactory
+            - name: artifactory_eu
 #          affinityGroup: together
           inputResources:
             - name: back_appBuildInfo
@@ -107,7 +107,7 @@ pipelines:
             - name: back_appBuildInfo_scanned_mvn
             - name: back_app_exec
           integrations:
-            - name: artifactory
+            - name: artifactory_eu
             # - name: docker_registry
         execution:
           onStart:
@@ -148,7 +148,7 @@ pipelines:
           inputSteps:
             - name: build_docker_backapp_mvn
           integrations:
-            - name: artifactory
+            - name: artifactory_eu
           outputResources:
             - name: build_info_docker_backapp_mvn
         execution:
@@ -160,7 +160,7 @@ pipelines:
         type: Bash
         configuration:
           integrations:
-            - name: artifactory
+            - name: artifactory_eu
           affinityGroup: swampup
           inputResources:
             - name: build_info_docker_backapp_mvn
@@ -180,7 +180,7 @@ pipelines:
   #         comment: "Xray scan passed succesfully"
   #         copy: false
   #         integrations:
-  #           - name: artifactory
+  #           - name: artifactory_eu
   #         inputResources:
   #           - name: build_info_docker_backapp
   #             trigger: true
