@@ -50,8 +50,8 @@ resources:
     configuration:
       sourceArtifactory: artifactory_eu
       #pattern: 'app-mvn-rc-local/**/webservice-*.war'
-      pattern: 'ninja-mvn-snapshot-local/com/example/multi-module-application/0.0.1-SNAPSHOT/multi-module-application-0.0.1-SNAPSHOT.jar'
-      target: app/multi-module-application-0.0.1-SNAPSHOT.jar
+      pattern: 'ninja-mvn-snapshot-local/com/example/multi-module-application/1.0.0/multi-module-application-1.0.0.jar'
+      target: app/multi-module-application-1.0.0.jar
       flat: true
 
   - name: build_info_docker_backapp_mvn
