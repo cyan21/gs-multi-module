@@ -24,31 +24,31 @@ resources:
         include: jfrog
 
   # Build info for the published mvn App
-  - name: back_appBuildInfo
+  - name: back_appBuildInfo_mvn
     type: BuildInfo
     configuration:
-      sourceArtifactory: artifactory
+      sourceArtifactory: artifactory_eu
       buildName: back_app_mvn_pipeline
       buildNumber: ${run_number}
 
   - name: back_appBuildInfo_scanned_mvn
     type: BuildInfo
     configuration:
-      sourceArtifactory: artifactory
+      sourceArtifactory: artifactory_eu
       buildName: back_app_mvn_pipeline
       buildNumber: '${run_number}'
 
   # - name: build_info_back_app_promoted_staging
   #   type: BuildInfo
   #   configuration:
-  #     sourceArtifactory: artifactory
+  #     sourceArtifactory: artifactory_eu
   #     buildName: back_app_mvn_pipeline
   #     buildNumber: '${run_number}'
 
   - name: back_app_mvn
     type: FileSpec
     configuration:
-      sourceArtifactory: artifactory
+      sourceArtifactory: artifactory_eu
       #pattern: 'app-mvn-rc-local/**/webservice-*.war'
       pattern: 'ninja-mvn-snapshot-local/com/example/multi-module-application/0.0.1-SNAPSHOT/multi-module-application-0.0.1-SNAPSHOT.jar'
       target: app/multi-module-application-0.0.1-SNAPSHOT.jar
@@ -57,20 +57,20 @@ resources:
   - name: build_info_docker_backapp_mvn
     type: BuildInfo
     configuration:
-      sourceArtifactory: artifactory
+      sourceArtifactory: artifactory_eu
       buildName: back_app-docker
       buildNumber: '${run_number}'
 
   - name: build_info_docker_backapp_scanned_mvn
     type: BuildInfo
     configuration:
-      sourceArtifactory: artifactory
+      sourceArtifactory: artifactory_eu
       buildName: back_app-docker
       buildNumber: '${run_number}'
 
   # - name: build_info_docker_backapp_promoted_staging
   #   type: BuildInfo
   #   configuration:
-  #     sourceArtifactory: artifactory
+  #     sourceArtifactory: artifactory_eu
   #     buildName: back_app-docker
   #     buildNumber: '${run_number}'
