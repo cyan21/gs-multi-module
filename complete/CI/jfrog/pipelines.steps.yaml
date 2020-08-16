@@ -58,7 +58,7 @@ pipelines:
             - name: artifactory_eu
 #          affinityGroup: together
           inputResources:
-            - name: back_appBuildInfo
+            - name: back_appBuildInfo_mvn
           outputResources:
             - name: back_appBuildInfo_scanned_mvn
         execution:
