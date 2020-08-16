@@ -60,13 +60,13 @@ pipelines:
           inputResources:
             - name: back_appBuildInfo
           outputResources:
-            - name: back_appBuildInfo_scanned
+            - name: back_appBuildInfo_scanned_mvn
         execution:
           onStart:
             - echo ${res_back_appBuildInfo_buildName}
             - echo ${res_back_appBuildInfo_buildNumber}
             - jfrog rt bs ${res_back_appBuildInfo_buildName} ${res_back_appBuildInfo_buildNumber} --fail=false
-            - write_output back_appBuildInfo_scanned myversion=${appVersion}
+            - write_output back_appBuildInfo_scanned_mvn myversion=${appVersion}
 
 
       # - name: promote_build_info_mvn_back_app
@@ -101,10 +101,10 @@ pipelines:
           dockerFileName: Dockerfile
           dockerFileLocation: complete/CI/Docker/
           dockerImageName: '${ArtIP}/ninja-docker/backapp'
-          dockerImageTag: '${res_back_appBuildInfo_scanned_myversion}-${res_src_dockerfile_back_app_commitSha}'
+          dockerImageTag: '${res_back_appBuildInfo_scanned_mvn_myversion}-${res_src_dockerfile_back_app_commitSha}'
           inputResources:
             - name: src_dockerfile_back_app
-            - name: back_appBuildInfo_scanned
+            - name: back_appBuildInfo_scanned_mvn
             - name: back_app_exec
           integrations:
             - name: artifactory
@@ -112,8 +112,8 @@ pipelines:
         execution:
           onStart:
             - 'export ArtIP=$(echo ${int_artifactory_url}|awk -F ''/'' ''{print $3}'')'
-            - echo ${res_back_appBuildInfo_scanned_myversion}
-            - add_pipeline_variables appVersion="${res_back_appBuildInfo_scanned_myversion}"
+            - echo ${res_back_appBuildInfo_scanned_mvn_myversion}
+            - add_pipeline_variables appVersion="${res_back_appBuildInfo_scanned_mvn_myversion}"
             - echo $triggerBuildInfoName
             - echo $triggerBuildInfoNumber
             - add_pipeline_variables triggerBuildInfoName="${res_build_info_back_app_promoted_staging_buildName}"
