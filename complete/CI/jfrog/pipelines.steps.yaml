@@ -34,7 +34,7 @@ pipelines:
           onComplete: #always
             - echo "Leave it as you found it. Let's clean it"
 
-      - name: publish_backend_buildinfo
+      - name: publish_backend_buildinfo_mvn
         type: PublishBuildInfo
         configuration:
           inputSteps:
@@ -103,9 +103,9 @@ pipelines:
           dockerImageName: '${ArtIP}/ninja-docker/backapp'
           dockerImageTag: '${res_back_appBuildInfo_scanned_mvn_myversion}-${res_src_dockerfile_back_app_commitSha}'
           inputResources:
-            - name: src_dockerfile_back_app
+            - name: src_dockerfile_back_app_mvn
             - name: back_appBuildInfo_scanned_mvn
-            - name: back_app_exec
+            - name: back_app_mvn
           integrations:
             - name: artifactory_eu
             # - name: docker_registry
@@ -124,22 +124,22 @@ pipelines:
             - echo $triggerBuildInfoName
             - echo ${triggerBuildInfoNumber}
             #####################################
-            - echo ${res_back_app_exec_resourcePath}
+            - echo ${res_back_app_mvn_resourcePath}
             - echo "Gradle App Build number :" 
             - echo ${triggerBuildInfoNumber}
             - echo "Webservice App version :" 
             - echo ${appVersion} 
             - echo "Git repo hash :" 
-            - echo ${res_src_dockerfile_back_app_commitSha}
+            - echo ${res_src_dockerfile_back_app_mvn_commitSha}
             - echo "Copying exec binary to specific location..." && ls -l
-            - echo "Filespec location :" && echo ${res_back_app_exec_resourcePath} && ls -l ${res_back_app_exec_resourcePath}
+            - echo "Filespec location :" && echo ${res_back_app_mvn_resourcePath} && ls -l ${res_back_app_mvn_resourcePath}
             - echo $appVersion
-            - sed -i "s/registry/${ArtIP}/g" ${res_src_dockerfile_back_app_resourcePath}/complete/CI/Docker/Dockerfile
-            - add_pipeline_variables myDockerTag="${appVersion}-${res_src_dockerfile_back_app_commitSha}"
+            - sed -i "s/registry/${ArtIP}/g" ${res_src_dockerfile_back_app_mvn_resourcePath}/complete/CI/Docker/Dockerfile
+            - add_pipeline_variables myDockerTag="${appVersion}-${res_src_dockerfile_back_app_mvn_commitSha}"
           onSuccess:
             - echo "Job well done!"
 
-      - name: publish_docker_backapp
+      - name: publish_docker_backapp_mvn
         type: DockerPush
         configuration:
           affinityGroup: swampup
