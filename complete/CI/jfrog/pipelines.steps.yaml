@@ -96,9 +96,9 @@ pipelines:
           dockerImageName: 'yannaws-app-docker.jfrog.io/backapp-mvn'
           dockerImageTag: '${res_pb_backapp_mvn_myversion}-${res_src_dockerfile_backapp_commitSha}'
           inputResources:
-            - name: src_dockerfile_back_app_mvn
+            - name: src_dockerfile_backapp_mvn
             - name: pb_backapp_mvn
-            - name: backapp_mvn
+            - name: fs_backapp_mvn
           integrations:
             - name: artifactory_eu
             # - name: docker_registry
