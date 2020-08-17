@@ -43,13 +43,13 @@ resources:
     configuration:
       myversion: XXX
 
-  # - name: fs_backapp_mvn
-  #   type: FileSpec
-  #   configuration:
-  #     sourceArtifactory: artifactory_eu
-  #     pattern: 'app-mvn-rc-local/com/example/multi-module-application/1.0.0/multi-module-application-1.0.0.jar'
-  #     target: app/multi-module-application-1.0.0.jar
-  #     flat: true
+  - name: fs_backapp_mvn
+    type: FileSpec
+    configuration:
+      sourceArtifactory: artifactory_eu
+      pattern: 'app-mvn-rc-local/com/example/multi-module-application/1.0.0/multi-module-application-1.0.0.jar'
+      target: app/multi-module-application-1.0.0.jar
+      flat: true
 
   # - name: bi_docker_backapp_mvn
   #   type: BuildInfo
