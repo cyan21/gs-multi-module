@@ -51,23 +51,16 @@ resources:
       target: app/multi-module-application-1.0.0.jar
       flat: true
 
-  # - name: bi_docker_backapp_mvn
-  #   type: BuildInfo
-  #   configuration:
-  #     sourceArtifactory: artifactory_eu
-  #     buildName: backapp_mvn_docker
-  #     buildNumber: '${run_number}'
+  - name: bi_backapp_mvn_docker
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: artifactory_eu
+      buildName: backapp_mvn_docker
+      buildNumber: '${run_number}'
 
-  # - name: build_info_docker_backapp_scanned_mvn
-  #   type: BuildInfo
-  #   configuration:
-  #     sourceArtifactory: artifactory_eu
-  #     buildName: back_app-docker
-  #     buildNumber: '${run_number}'
-
-  # - name: build_info_docker_backapp_promoted_staging
-  #   type: BuildInfo
-  #   configuration:
-  #     sourceArtifactory: artifactory_eu
-  #     buildName: back_app-docker
-  #     buildNumber: '${run_number}'
+  - name: bi_backapp_mvn_docker_promoted_staging
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: artifactory_eu
+      buildName: backapp_mvn_docker
+      buildNumber: '${run_number}'
