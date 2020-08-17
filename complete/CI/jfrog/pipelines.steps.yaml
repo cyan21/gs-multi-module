@@ -24,7 +24,7 @@ pipelines:
             - name: artifactory_eu
         execution:
           onStart:
-            - echo  "property bag : $res_pb_backapp_mvn_myversion"
+            - echo  $res_pb_backapp_mvn_myversion
           onSuccess:
             - echo ${res_src_code_backapp_mvn_isGitTag}
             - appVersion=`if [[ ${res_src_code_backapp_mvn_isGitTag} == "True" ]]; then echo ${res_src_code_backapp_mvn_gitTagName}; else echo ${res_src_code_backapp_mvn_commitSha}; fi`
