@@ -1,7 +1,7 @@
 pipelines:
   - name: app_mvn_pipeline
     steps:
-      - name: build_app_mvn_backend
+      - name: build_backapp_mvn
         type: MvnBuild
         configuration: 
           # runtime:
@@ -17,56 +17,56 @@ pipelines:
           forceXrayScan:        false #optional
           autoPublishBuildInfo: false #optional
           inputResources:
-            - name: src_code_back_app_mvn
+            - name: src_code_backapp_mvn
           integrations:
             - name: artifactory_eu
         execution:
           onStart:
             - echo  "Preparing for work..."
           onSuccess:
-            - echo ${res_src_code_back_app_mvn_isGitTag}
-            - appVersion=`if [[ ${res_src_code_back_app_mvn_isGitTag} == "True" ]]; then echo ${res_src_code_back_app_mvn_gitTagName}; else echo ${res_src_code_back_app_mvn_commitSha}; fi`
+            - echo ${res_src_code_backapp_mvn_isGitTag}
+            - appVersion=`if [[ ${res_src_code_backapp_mvn_isGitTag} == "True" ]]; then echo ${res_src_code_backapp_mvn_gitTagName}; else echo ${res_src_code_backapp_mvn_commitSha}; fi`
             - echo $appVersion
             - add_pipeline_variables appVersion="${appVersion}"
-            - add_pipeline_variables subPath="${res_src_code_back_app_mvn_branchName}/${appVersion}"      
+            - add_pipeline_variables subPath="${res_src_code_backapp_mvn_branchName}/${appVersion}"      
           onFailure:
             - echo "You Lose"
           onComplete: #always
             - echo "Leave it as you found it. Let's clean it"
 
-      - name: publish_backend_buildinfo_mvn
+      - name: publish_bi_backapp_mvn
         type: PublishBuildInfo
         configuration:
           inputSteps:
-            - name: build_app_mvn_backend
+            - name: build_backapp_mvn
           outputResources:
-            - name: back_appBuildInfo_mvn
+            - name: bi_backapp_mvn
         execution:
           onStart:
             - echo "Preparing for Xray scan..."
           onSuccess:
-            - echo build name / build number ${res_back_appBuildInfo_buildName} ${res_back_appBuildInfo_buildNumber}
+            - echo build name / build number ${res_bi_backapp_mvn_buildName} ${res_bi_backapp_mvn_buildNumber}
           onFailure:
             - echo "uh oh, something went wrong"
           onComplete: #always
             - echo "Cleaning up some stuff"
       
-      - name: xray_scan_mvn_backapp
+      - name: scan_backapp_mvn
         type: Bash
         configuration:
           integrations:
             - name: artifactory_eu
 #          affinityGroup: together
           inputResources:
-            - name: back_appBuildInfo_mvn
-          outputResources:
-            - name: back_appBuildInfo_scanned_mvn
+            - name: bi_backapp_mvn
+#         outputResources:
+#            - name: back_appBuildInfo_scanned_mvn
         execution:
           onStart:
-            - echo ${res_back_appBuildInfo_mvn_buildName}
-            - echo ${res_back_appBuildInfo_mvn_buildNumber}
-            - jfrog rt bs ${res_back_appBuildInfo_mvn_buildName} ${res_back_appBuildInfo_mvn_buildNumber} --fail=false
-            - write_output back_appBuildInfo_scanned_mvn myversion=${appVersion}
+            - echo ${res_bi_backapp_mvn_buildName}
+            - echo ${res_bi_backapp_mvn_buildNumber}
+            - jfrog rt bs ${res_bi_backapp_mvn_buildName} ${res_bi_backapp_mvn_buildNumber} --fail=false
+#            - write_output back_appBuildInfo_scanned_mvn myversion=${appVersion}
 
 
       # - name: promote_build_info_mvn_back_app

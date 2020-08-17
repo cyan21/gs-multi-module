@@ -1,7 +1,7 @@
 resources:
 
 # mvn PIPELINE
-  - name: src_code_back_app_mvn
+  - name: src_code_backapp_mvn
     type: GitRepo
     configuration:
       files:
@@ -13,7 +13,7 @@ resources:
         include: jfrog
 
 # DOCKER PIPELINE
-  - name: src_dockerfile_back_app_mvn
+  - name: src_dockerfile_backapp_mvn
     type: GitRepo
     configuration:
       files:
@@ -24,19 +24,20 @@ resources:
         include: jfrog
 
   # Build info for the published mvn App
-  - name: back_appBuildInfo_mvn
+  - name: bi_backapp_mvn
     type: BuildInfo
     configuration:
       sourceArtifactory: artifactory_eu
-      buildName: back_app_mvn_pipeline
+#      buildName: back_app_mvn_pipeline
+      buildName: backapp_mvn
       buildNumber: ${run_number}
 
-  - name: back_appBuildInfo_scanned_mvn
-    type: BuildInfo
-    configuration:
-      sourceArtifactory: artifactory_eu
-      buildName: back_app_mvn_pipeline
-      buildNumber: '${run_number}'
+  # - name: back_appBuildInfo_scanned_mvn
+  #   type: BuildInfo
+  #   configuration:
+  #     sourceArtifactory: artifactory_eu
+  #     buildName: back_app_mvn_pipeline
+  #     buildNumber: '${run_number}'
 
   # - name: build_info_back_app_promoted_staging
   #   type: BuildInfo
