@@ -39,12 +39,12 @@ resources:
   #     buildName: back_app_mvn_pipeline
   #     buildNumber: '${run_number}'
 
-  # - name: build_info_back_app_promoted_staging
-  #   type: BuildInfo
-  #   configuration:
-  #     sourceArtifactory: artifactory_eu
-  #     buildName: back_app_mvn_pipeline
-  #     buildNumber: '${run_number}'
+  - name: bi_backapp_mvn_promoted_staging
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: artifactory_eu
+      buildName: backapp_mvn
+      buildNumber: '${run_number}'
 
   # - name: back_app_mvn
   #   type: FileSpec
