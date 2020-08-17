@@ -1,5 +1,5 @@
 pipelines:
-  - name: app_mvn_pipeline
+  - name: backapp_mvn
     steps:
       - name: build_backapp_mvn
         type: MvnBuild
