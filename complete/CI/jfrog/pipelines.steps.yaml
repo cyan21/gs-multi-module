@@ -56,18 +56,13 @@ pipelines:
         configuration:
           integrations:
             - name: artifactory_eu
-#          affinityGroup: together
           inputResources:
             - name: bi_backapp_mvn
-#         outputResources:
-#            - name: back_appBuildInfo_scanned_mvn
         execution:
           onStart:
             - echo ${res_bi_backapp_mvn_buildName}
             - echo ${res_bi_backapp_mvn_buildNumber}
             - jfrog rt bs ${res_bi_backapp_mvn_buildName} ${res_bi_backapp_mvn_buildNumber} --fail=false
-#            - write_output back_appBuildInfo_scanned_mvn myversion=${appVersion}
-
 
       - name: promote_bi_backapp_mvn
         type: PromoteBuild
