@@ -83,27 +83,29 @@ pipelines:
 #            - write_output bi_backapp_mvn_promoted_staging myversion=${appVersion}
             - write_output pb_backapp_mvn myversion=$appVersion
 
-  # - name: backapp_mvn_docker
-  #   steps:
-  #     - name: build_backapp_mvn_docker
-  #       type: DockerBuild
-  #       configuration:
-  #         affinityGroup: swampup
-  #         dockerFileName: Dockerfile
-  #         dockerFileLocation: complete/CI/Docker/
-  #         dockerImageName: '${ArtIP}/app-docker/backapp-mvn'
-  #         dockerImageTag: '${res_back_appBuildInfo_scanned_mvn_myversion}-${res_src_dockerfile_back_app_commitSha}'
-  #         inputResources:
-  #           - name: src_dockerfile_back_app_mvn
-  #           - name: back_appBuildInfo_scanned_mvn
-  #           - name: back_app_mvn
-  #         integrations:
-  #           - name: artifactory_eu
-  #           # - name: docker_registry
-  #       execution:
-  #         onStart:
-  #           - 'export ArtIP=$(echo ${int_artifactory_eu_url}|awk -F ''/'' ''{print $3}'')'
-  #           - echo ${res_back_appBuildInfo_scanned_mvn_myversion}
+  - name: backapp_mvn_docker
+    steps:
+      - name: build_backapp_mvn_docker
+        type: DockerBuild
+        configuration:
+          affinityGroup: swampup
+          dockerFileName: Dockerfile
+          dockerFileLocation: complete/CI/Docker/
+#          dockerImageName: '${ArtIP}/app-docker/backapp-mvn'
+#          dockerImageTag: '${res_back_appBuildInfo_scanned_mvn_myversion}-${res_src_dockerfile_back_app_commitSha}'
+          dockerImageName: 'yannaws-app-docker.jfrog.io/backapp-mvn'
+          dockerImageTag: '${res_pb_backapp_mvn_myversion}-${res_src_dockerfile_backapp_commitSha}'
+          inputResources:
+            - name: src_dockerfile_back_app_mvn
+            - name: pb_backapp_mvn
+            - name: backapp_mvn
+          integrations:
+            - name: artifactory_eu
+            # - name: docker_registry
+        execution:
+          onStart:
+            - 'export ArtIP=$(echo ${int_artifactory_eu_url}|awk -F ''/'' ''{print $3}'')'
+  #          - echo ${res_back_appBuildInfo_scanned_mvn_myversion}
   #           - add_pipeline_variables appVersion="${res_back_appBuildInfo_scanned_mvn_myversion}"
   #           - add_pipeline_variables triggerBuildInfoName="${res_bi_backapp_mvn_promoted_staging_buildName}"
   #           - add_pipeline_variables triggerBuildInfoNumber="${res_bi_backapp_mvn_promoted_staging_buildNumber}"
