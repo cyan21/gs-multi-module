@@ -97,6 +97,7 @@ pipelines:
             - name: src_dockerfile_backapp_mvn
             - name: pb_backapp_mvn
             - name: fs_backapp_mvn
+            - name: bi_backapp_mvn_promoted_staging
           integrations:
             - name: artifactory_eu
             # - name: docker_registry
@@ -124,8 +125,9 @@ pipelines:
   #           - echo $appVersion
   #           - sed -i "s/registry/${ArtIP}/g" ${res_src_dockerfile_back_app_mvn_resourcePath}/complete/CI/Docker/Dockerfile
   #           - add_pipeline_variables myDockerTag="${appVersion}-${res_src_dockerfile_back_app_mvn_commitSha}"
-  #         onSuccess:
-  #           - echo "Job well done!"
+          onSuccess:
+            - echo "Job well done!"
+            - echo ${res_pb_backapp_mvn_biNumber}
 
       - name: publish_backapp_mvn_docker
         type: DockerPush
