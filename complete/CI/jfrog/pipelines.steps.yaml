@@ -18,7 +18,7 @@ pipelines:
           autoPublishBuildInfo: false #optional
           inputResources:
             - name: src_code_backapp_mvn
-            - name: pb_backapp_mvn
+#            - name: pb_backapp_mvn
           integrations:
             - name: artifactory_eu
         execution:
