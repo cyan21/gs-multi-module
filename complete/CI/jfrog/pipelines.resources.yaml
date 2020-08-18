@@ -47,8 +47,11 @@ resources:
     type: FileSpec
     configuration:
       sourceArtifactory: artifactory_eu
-      pattern: 'app-mvn-rc-local/com/example/multi-module-application/1.0.0/multi-module-application-1.0.0.jar'
+#      pattern: 'app-mvn-rc-local/com/example/multi-module-application/1.0.0/multi-module-application-1.0.0.jar'
+      pattern: 'app-mvn-rc-local/**/*.jar'
       target: app/multi-module-application-1.0.0.jar
+      buildName: backapp_mvn
+      buildNumber: 5
       flat: true
 
   - name: bi_backapp_mvn_docker

@@ -19,8 +19,6 @@ pipelines:
           inputResources:
             - name: src_code_backapp_mvn
             - name: pb_backapp_mvn
-          outputResources:
-            - name: pb_backapp_mvn
           integrations:
             - name: artifactory_eu
         execution:
@@ -81,7 +79,6 @@ pipelines:
             - echo $appVersion
           onSuccess:
             - jfrog rt sp --build=${res_bi_backapp_mvn_buildName}/${res_bi_backapp_mvn_buildNumber} app-mvn-rc-local/ "app.version=${appVersion}"
-#            - write_output bi_backapp_mvn_promoted_staging myversion=${appVersion}
             - write_output pb_backapp_mvn myversion=$appVersion
 
   - name: backapp_mvn_docker
