@@ -51,7 +51,7 @@ resources:
       pattern: 'app-mvn-rc-local/**/*.jar'
       target: app/multi-module-application-1.0.0.jar
       buildName: backapp_mvn
-      buildNumber: 5
+      buildNumber: 10
       flat: true
 
   - name: bi_backapp_mvn_docker
