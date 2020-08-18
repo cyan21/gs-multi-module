@@ -41,7 +41,7 @@ resources:
   - name: pb_backapp_mvn
     type: PropertyBag
     configuration:
-      myversion: 2.0.0
+      dockerAppTag: 2.0.0
       release: false
 
   - name: fs_backapp_mvn
