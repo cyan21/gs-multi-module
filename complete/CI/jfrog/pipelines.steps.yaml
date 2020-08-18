@@ -79,7 +79,7 @@ pipelines:
           onSuccess:
             - jfrog rt sp --build=${res_bi_backapp_mvn_buildName}/${res_bi_backapp_mvn_buildNumber} app-mvn-rc-local/ "app.version=${appVersion}"
             - write_output pb_backapp_mvn dockerAppTag=${dockerTag}
-            - write_output pb_backapp_mvn biNumber=${res_bi_backapp_mvn_buildNumber}
+            - write_output pb_backapp_mvn dockerAppTag=${res_bi_backapp_mvn_buildNumber}
 
   - name: backapp_mvn_docker
     steps:
@@ -100,8 +100,9 @@ pipelines:
           integrations:
             - name: artifactory_eu
             # - name: docker_registry
-  #      execution:
-  #        onStart:
+        execution:
+          onStart:
+            - echo ${res_pb_backapp_mvn_biNumber}
   #          - 'export ArtIP=$(echo ${int_artifactory_eu_url}|awk -F ''/'' ''{print $3}'')'
   #          - echo ${res_back_appBuildInfo_scanned_mvn_myversion}
   #           - add_pipeline_variables appVersion="${res_back_appBuildInfo_scanned_mvn_myversion}"
