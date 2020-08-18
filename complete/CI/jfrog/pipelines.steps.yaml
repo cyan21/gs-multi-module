@@ -78,8 +78,11 @@ pipelines:
             - echo $appVersion
           onSuccess:
             - jfrog rt sp --build=${res_bi_backapp_mvn_buildName}/${res_bi_backapp_mvn_buildNumber} app-mvn-rc-local/ "app.version=${appVersion}"
-            - write_output pb_backapp_mvn myversion=$appVersion
-
+            - if [[ ${res_src_code_backapp_mvn_isGitTag} == "True" ]]; then write_output pb_backapp_mvn release=true; fi
+            - if [[ ${res_src_code_backapp_mvn_isGitTag} == "True" ]]; then write_output pb_backapp_mvn myversion=$myversion; fi
+            - echo ${res_pb_backapp_mvn_myversion}
+            - echo ${res_pb_backapp_mvn_release}
+            
   - name: backapp_mvn_docker
     steps:
       - name: build_backapp_mvn_docker

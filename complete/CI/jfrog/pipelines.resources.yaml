@@ -41,7 +41,8 @@ resources:
   - name: pb_backapp_mvn
     type: PropertyBag
     configuration:
-      myversion: XXX
+      myversion: 2.0.0
+      release: false
 
   - name: fs_backapp_mvn
     type: FileSpec
