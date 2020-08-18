@@ -43,17 +43,15 @@ resources:
     configuration:
       dockerAppTag: 2.0.0
       release: false
+      biNumber: XXX
 
   - name: fs_backapp_mvn
     type: FileSpec
     configuration:
       sourceArtifactory: artifactory_eu
-#      pattern: 'app-mvn-rc-local/com/example/multi-module-application/1.0.0/multi-module-application-1.0.0.jar'
       pattern: 'app-mvn-rc-local/**/multi-module-application*.jar'
       target: app/multi-module-application-1.0.0.jar
-      props: "build.name=backapp_mvn;build.number=5"
-#      buildName: 'backapp_mvn'
-#      buildNumber: 5
+      props: "build.name=backapp_mvn;build.number=${res_pb_backapp_mvn_biNumber}"
       flat: true
 
   - name: bi_backapp_mvn_docker

@@ -79,7 +79,8 @@ pipelines:
           onSuccess:
             - jfrog rt sp --build=${res_bi_backapp_mvn_buildName}/${res_bi_backapp_mvn_buildNumber} app-mvn-rc-local/ "app.version=${appVersion}"
             - write_output pb_backapp_mvn dockerAppTag=${dockerTag}
-            
+            - write_output pb_backapp_mvn biNumber=${res_bi_backapp_mvn_buildNumber}
+
   - name: backapp_mvn_docker
     steps:
       - name: build_backapp_mvn_docker
