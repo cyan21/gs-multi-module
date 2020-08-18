@@ -18,16 +18,17 @@ pipelines:
           autoPublishBuildInfo: false #optional
           inputResources:
             - name: src_code_backapp_mvn
+            - name: pb_backapp_mvn
+          outputResources:
+            - name: pb_backapp_mvn
           integrations:
             - name: artifactory_eu
         execution:
           onStart:
             - echo $res_pb_backapp_mvn_myversion
           onSuccess:
-            - echo ${res_src_code_backapp_mvn_isGitTag}
             - appVersion=`if [[ ${res_src_code_backapp_mvn_isGitTag} == "True" ]]; then echo ${res_src_code_backapp_mvn_gitTagName}; else echo ${res_src_code_backapp_mvn_commitSha}; fi`
             - echo $appVersion
-#            - add_pipeline_variables appVersion="${appVersion}"
 #            - add_pipeline_variables subPath="${res_src_code_backapp_mvn_branchName}/${appVersion}"      
             - add_run_variables appVersion="${appVersion}"
 
