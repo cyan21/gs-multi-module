@@ -150,7 +150,6 @@ pipelines:
         configuration:
           integrations:
             - name: artifactory_eu
-          affinityGroup: swampup
           inputResources:
             - name: bi_backapp_mvn_docker
         execution:
@@ -162,7 +161,6 @@ pipelines:
       - name: promote_bi_backapp_mvn_docker
         type: PromoteBuild
         configuration:
-          affinityGroup: swampup
           targetRepository: app-docker-rc-local
           includeDependencies: false
           status: "DOCKER_SCAN_OK"
