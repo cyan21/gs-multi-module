@@ -157,7 +157,7 @@ pipelines:
             - name: scan_bi_backapp_mvn_docker
           outputResources:
             - name: bi_backapp_mvn_docker_promoted_staging
-         execution:
+        execution:
           onSuccess:
             - jfrog rt sp --build=${res_build_info_docker_backapp_buildName}/${res_build_info_docker_backapp_buildNumber} app-docker-rc-local/**/manifest.json "docker.tag=${myDockerTag}"
             - write_output build_info_docker_backapp_promoted_staging "backregistry=\"${ArtIP}/app-docker-virtual\""
