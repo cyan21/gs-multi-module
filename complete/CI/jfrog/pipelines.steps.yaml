@@ -85,12 +85,12 @@ pipelines:
 
   - name: backapp_mvn_docker
       configuration:
-      environmentVariables:
-        readOnly:
-          # for SAAS
-          dockerRepo: yannaws-app-docker.jfrog.io
-          dockerPushRepo: app-docker
-          dockerPromoteRepo: app-docker-rc-local
+        environmentVariables:
+          readOnly:
+            # for SAAS
+            dockerRepo: yannaws-app-docker.jfrog.io
+            dockerPushRepo: app-docker
+            dockerPromoteRepo: app-docker-rc-local
     steps:
       - name: build_backapp_mvn_docker
         type: DockerBuild
