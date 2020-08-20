@@ -1,9 +1,9 @@
 pipelines:
   - name: backapp_mvn
     configuration:
-    environmentVariables:
-      readOnly:
-        myDemoVersion:  2.0.0
+      environmentVariables:
+        readOnly:
+          myDemoVersion:  2.0.0
     steps:
       - name: build_backapp_mvn
         type: MvnBuild
