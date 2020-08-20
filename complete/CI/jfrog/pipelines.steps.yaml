@@ -141,7 +141,7 @@ pipelines:
       - name: promote_bi_backapp_mvn_docker
         type: PromoteBuild
         configuration:
-          targetRepository: ${dockerPromoteRepo}
+          targetRepository: ${dockerPromoteRepo}/
           includeDependencies: false
           status: "DOCKER_SCAN_OK"
           comment: "Xray scan passed succesfully"
