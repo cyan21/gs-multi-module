@@ -4,6 +4,7 @@ pipelines:
       environmentVariables:
         readOnly:
           myDemoVersion:  2.0.0
+          mvnPromoteRepo: app-mvn-rc-local
     steps:
       - name: build_backapp_mvn
         type: MvnBuild
@@ -25,10 +26,7 @@ pipelines:
           integrations:
             - name: artifactory_eu
         execution:
-          onStart:
-            - echo salut
           onSuccess:
-#            - appVersion=`if [[ ${res_src_code_backapp_mvn_isGitTag} == "True" ]]; then echo ${res_src_code_backapp_mvn_gitTagName}; else echo ${res_pb_backapp_myversion}; fi` 
             - add_run_variables myAppVersion=`if [[ ${res_src_code_backapp_mvn_isGitTag} == "True" ]]; then echo ${res_src_code_backapp_mvn_gitTagName}; else echo ${myDemoVersion}; fi` 
             - add_run_variables myDockerTag="${myAppVersion}-${res_src_code_backapp_mvn_commitSha}"
             - echo $myAppVersion
@@ -63,7 +61,7 @@ pipelines:
       - name: promote_bi_backapp_mvn
         type: PromoteBuild
         configuration:
-          targetRepository: app-mvn-rc-local
+          targetRepository: ${mvnPromoteRepo}
           includeDependencies: false
           status: SANDBOX_OK
           comment: Unit testing and Xray scan passed succesfully
@@ -80,13 +78,19 @@ pipelines:
           onStart:
             - echo ${res_bi_backapp_mvn_buildName} 
             - echo ${res_bi_backapp_mvn_buildNumber} 
-            - echo $dockerTag
           onSuccess:
-            - jfrog rt sp --build=${res_bi_backapp_mvn_buildName}/${res_bi_backapp_mvn_buildNumber} app-mvn-rc-local/ "app.version=${appVersion}"
+            - jfrog rt sp --build=${res_bi_backapp_mvn_buildName}/${res_bi_backapp_mvn_buildNumber} app-mvn-rc-local/ "app.version=${myAppVersion}"
             - write_output pb_backapp_mvn dockerAppTag=${myDockerTag}
             - write_output pb_backapp_mvn biNumber=${res_bi_backapp_mvn_buildNumber}
 
   - name: backapp_mvn_docker
+      configuration:
+      environmentVariables:
+        readOnly:
+          # for SAAS
+          dockerRepo: yannaws-app-docker.jfrog.io
+          dockerPushRepo: app-docker
+          dockerPromoteRepo: app-docker-rc-local
     steps:
       - name: build_backapp_mvn_docker
         type: DockerBuild
@@ -94,9 +98,7 @@ pipelines:
           affinityGroup: swampup
           dockerFileName: Dockerfile
           dockerFileLocation: complete/CI/Docker/
-#          dockerImageName: '${ArtIP}/app-docker/backapp-mvn'
-#          dockerImageTag: '${res_back_appBuildInfo_scanned_mvn_myversion}-${res_src_dockerfile_back_app_commitSha}'
-          dockerImageName: 'yannaws-app-docker.jfrog.io/backapp-mvn'
+          dockerImageName: ${dockerPushRepo}/backapp-mvn
           dockerImageTag: '${res_pb_backapp_mvn_dockerAppTag}'
           inputResources:
             - name: src_dockerfile_backapp_mvn
@@ -105,31 +107,9 @@ pipelines:
             - name: bi_backapp_mvn_promoted_staging
           integrations:
             - name: artifactory_eu
-            # - name: docker_registry
         execution:
           onStart:
             - echo ${res_pb_backapp_mvn_biNumber}
-  #          - 'export ArtIP=$(echo ${int_artifactory_eu_url}|awk -F ''/'' ''{print $3}'')'
-  #          - echo ${res_back_appBuildInfo_scanned_mvn_myversion}
-  #           - add_pipeline_variables appVersion="${res_back_appBuildInfo_scanned_mvn_myversion}"
-  #           - add_pipeline_variables triggerBuildInfoName="${res_bi_backapp_mvn_promoted_staging_buildName}"
-  #           - add_pipeline_variables triggerBuildInfoNumber="${res_bi_backapp_mvn_promoted_staging_buildNumber}"
-  #           - echo $triggerBuildInfoName
-  #           - echo $triggerBuildInfoNumber
-  #           - echo ${appVersion}Ò
-  #           #####################################
-  #           - echo ${res_back_app_mvn_resourcePath}
-  #           - echo "Gradle App Build number :" 
-  #           - echo ${triggerBuildInfoNumber}
-  #           - echo "Webservice App version :" 
-  #           - echo ${appVersion} 
-  #           - echo "Git repo hash :" 
-  #           - echo ${res_src_dockerfile_backapp_mvn_commitSha}
-  #           - echo "Copying exec binary to specific location..." && ls -l
-  #           - echo "Filespec location :" && echo ${res_backapp_mvn_resourcePath} && ls -l ${res_backapp_mvn_resourcePath}
-  #           - echo $appVersion
-  #           - sed -i "s/registry/${ArtIP}/g" ${res_src_dockerfile_back_app_mvn_resourcePath}/complete/CI/Docker/Dockerfile
-  #           - add_pipeline_variables myDockerTag="${appVersion}-${res_src_dockerfile_back_app_mvn_commitSha}"
           onSuccess:
             - echo "Job well done!"
             - echo ${res_pb_backapp_mvn_biNumber}
@@ -138,7 +118,7 @@ pipelines:
         type: DockerPush
         configuration:
           affinityGroup: swampup
-          targetRepository: app-docker
+          targetRepository: ${dockerPushRepo}
           autoPublishBuildInfo: true
           inputSteps:
             - name: build_backapp_mvn_docker
@@ -146,10 +126,6 @@ pipelines:
             - name: artifactory_eu
           outputResources:
             - name: bi_backapp_mvn_docker
-  #       execution:
-  #         onSuccess:
-  #           - echo "Job well done!"
-  #           - echo $appVersion
 
       - name: scan_bi_backapp_mvn_docker
         type: Bash
@@ -167,7 +143,7 @@ pipelines:
       - name: promote_bi_backapp_mvn_docker
         type: PromoteBuild
         configuration:
-          targetRepository: app-docker-rc-local
+          targetRepository: ${dockerPromoteRepo}
           includeDependencies: false
           status: "DOCKER_SCAN_OK"
           comment: "Xray scan passed succesfully"
@@ -181,14 +157,9 @@ pipelines:
             - name: scan_bi_backapp_mvn_docker
           outputResources:
             - name: bi_backapp_mvn_docker_promoted_staging
-  #       execution:
-  #         onStart:
-  #           - 'export ArtIP=$(echo ${int_artifactory_url}|awk -F ''/'' ''{print $3}'')'
-  #           - echo ${res_bi_backapp_mvn_docker_buildName}
-  #           - echo ${res_bi_backapp_mvn_docker_buildNumber}
-  #           - jfrog rt cp --build=${res_bi_backapp_mvn_docker_buildName}/${res_bi_backapp_mvn_docker_buildNumber} app-docker-dev-local/ app-docker-rc-local/
-  #         onSuccess:
-  #           - jfrog rt sp --build=${res_build_info_docker_backapp_buildName}/${res_build_info_docker_backapp_buildNumber} app-docker-rc-local/**/manifest.json "docker.tag=${myDockerTag}"
-  #           - write_output build_info_docker_backapp_promoted_staging "backregistry=\"${ArtIP}/app-docker-virtual\""
-  #           - write_output build_info_docker_backapp_promoted_staging "backimage=\"backapp\""
-  #           - write_output build_info_docker_backapp_promoted_staging "backtag=${myDockerTag}"
+         execution:
+          onSuccess:
+            - jfrog rt sp --build=${res_build_info_docker_backapp_buildName}/${res_build_info_docker_backapp_buildNumber} app-docker-rc-local/**/manifest.json "docker.tag=${myDockerTag}"
+            - write_output build_info_docker_backapp_promoted_staging "backregistry=\"${ArtIP}/app-docker-virtual\""
+            - write_output build_info_docker_backapp_promoted_staging "backimage=\"backapp\""
+            - write_output build_info_docker_backapp_promoted_staging "backtag=${myDockerTag}"

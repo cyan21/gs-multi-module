@@ -41,8 +41,6 @@ resources:
   - name: pb_backapp_mvn
     type: PropertyBag
     configuration:
-#      myversion: 2.0.0
-      release: false
       biNumber: XXX
 
   - name: fs_backapp_mvn
@@ -52,7 +50,6 @@ resources:
       pattern: 'app-mvn-rc-local/**/multi-module-application*.jar'
       target: app/multi-module-application-1.0.0.jar
       props: "build.name=backapp_mvn;build.number=${res_pb_backapp_mvn_biNumber}"
-#      props: "build.name=backapp_mvn;build.number=${biNumber}"
       flat: true
 
   - name: bi_backapp_mvn_docker
