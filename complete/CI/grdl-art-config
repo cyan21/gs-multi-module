@@ -1,10 +1,9 @@
 version: 1
 type: gradle 
+useWrapper: false
 resolver:
   serverID: artifactory_eu
-  snapshotRepo: ninja-grdl-dev
-  releaseRepo: ninja-grdl-dev
+  repo: ninja-dev-grdl
 deployer:
   serverID: artifactory_eu
-  snapshotRepo: ninja-grdl-dev
-  releaseRepo: ninja-grdl-dev
+  repo: ninja-dev-grdl
