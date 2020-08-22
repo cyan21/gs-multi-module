@@ -1,0 +1,39 @@
+localRepositories:   
+  ninja-dev-mvn-local:
+    type: maven
+    xray:   
+      enabled: true
+  ninja-rc-mvn-local:
+    type: maven
+    xray:   
+      enabled: true
+  ninja-dev-docker-local:
+    type: maven
+    xray:   
+      enabled: true
+  ninja-rc-docker-local:
+    type: maven
+    xray:   
+      enabled: true
+remoteRepositories: 
+  ninja-jcenter-remote:
+    type: maven 
+    url: https://jcenter.bintray.com 
+    xray:   
+      enabled: true
+  ninja-dockerhub-remote:
+    type: maven 
+    url: https://jcenter.bintray.com 
+    xray:   
+      enabled: true
+virtualRepositories: 
+  ninja-dev-mvn:
+    type: maven
+    repositories:   
+      - ninja-dev-mvn-local
+      - ninja-jcenter-remote
+  ninja-dev-docker:
+    type: maven
+    repositories:   
+      - ninja-dev-docker-local
+      - ninja-dockerhub-remote
