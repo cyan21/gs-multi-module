@@ -4,7 +4,7 @@ pipelines:
       environmentVariables:
         readOnly:
           myDemoVersion:  2.0.0
-          mvnPromoteRepo: app-mvn-rc-local
+          mvnPromoteRepo: ninja-rc-mvn-local
     steps:
       - name: build_backapp_mvn
         type: MvnBuild
@@ -87,8 +87,8 @@ pipelines:
     configuration:
       environmentVariables:
         readOnly:
-          dockerPushRepo: yannaws-app-docker.jfrog.io
-          dockerPromoteRepo: app-docker-rc-local
+          dockerPushRepo: yannaws-ninja-dev-docker.jfrog.io
+          dockerPromoteRepo: ninja-rc-docker-local
     steps:
       - name: build_backapp_mvn_docker
         type: DockerBuild

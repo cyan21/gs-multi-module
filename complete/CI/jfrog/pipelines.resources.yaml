@@ -47,7 +47,7 @@ resources:
     type: FileSpec
     configuration:
       sourceArtifactory: artifactory_eu
-      pattern: 'app-mvn-rc-local/**/multi-module-application*.jar'
+      pattern: "${mvnPromoteRepo}/**/multi-module-application*.jar"
       target: app/multi-module-application-1.0.0.jar
       props: "build.name=backapp_mvn;build.number=${res_pb_backapp_mvn_biNumber}"
       flat: true
