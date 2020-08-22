@@ -16,11 +16,11 @@ localRepositories:
     xray:   
       enabled: true
   ninja-dev-docker-local:
-    type: maven
+    type: docker
     xray:   
       enabled: true
   ninja-rc-docker-local:
-    type: maven
+    type: docker
     xray:   
       enabled: true
 remoteRepositories: 
@@ -35,8 +35,8 @@ remoteRepositories:
     xray:   
       enabled: true
   ninja-dockerhub-remote:
-    type: maven 
-    url: https://jcenter.bintray.com 
+    type: docker 
+    url: https://registry-1.docker.io/
     xray:   
       enabled: true
 virtualRepositories: 
@@ -45,13 +45,16 @@ virtualRepositories:
     repositories:   
       - ninja-dev-mvn-local
       - ninja-jcenter-remote
+    defaultDeploymentRepo: ninja-dev-mvn-local
   ninja-dev-docker:
-    type: maven
+    type: docker
     repositories:   
       - ninja-dev-docker-local
       - ninja-dockerhub-remote
+    defaultDeploymentRepo: ninja-dev-docker-local
   ninja-dev-grdl:
     type: gradle
     repositories:   
       - ninja-dev-grdl-local
       - ninja-jcenter-gradle-remote
+    defaultDeploymentRepo: ninja-dev-grdl-local
