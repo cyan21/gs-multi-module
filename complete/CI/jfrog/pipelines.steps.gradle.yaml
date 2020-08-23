@@ -7,7 +7,7 @@ pipelines:
           grdlPromoteRepo: app-grdl-rc-local
     steps:
       - name: build_backapp_grdl
-        type: grdlBuild
+        type: GradleBuild
         configuration: 
           # runtime:
           #   type: image
