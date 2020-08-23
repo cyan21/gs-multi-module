@@ -87,7 +87,8 @@ pipelines:
     configuration:
       environmentVariables:
         readOnly:
-          dockerPushRepo: yannaws-ninja-dev-docker.jfrog.io
+          dockerPushRepo: ninja-dev-docker
+          myDockerImageName: yannaws-ninja-dev-docker.jfrog.io/backapp-mvn
           dockerPromoteRepo: ninja-rc-docker-local
     steps:
       - name: build_backapp_mvn_docker
@@ -96,7 +97,7 @@ pipelines:
           affinityGroup: swampup
           dockerFileName: Dockerfile
           dockerFileLocation: complete/CI/Docker/
-          dockerImageName: ${dockerPushRepo}/backapp-mvn
+          dockerImageName: ${myDockerImageName}
           dockerImageTag: '${res_pb_backapp_mvn_dockerAppTag}'
           inputResources:
             - name: src_dockerfile_backapp_mvn
