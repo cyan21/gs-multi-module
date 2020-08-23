@@ -1,0 +1,163 @@
+pipelines:
+  - name: backapp_grdl
+    configuration:
+      environmentVariables:
+        readOnly:
+          myDemoVersion:  2.0.0
+          grdlPromoteRepo: app-grdl-rc-local
+    steps:
+      - name: build_backapp_grdl
+        type: grdlBuild
+        configuration: 
+          # runtime:
+          #   type: image
+          #   image:
+          #     custom:
+          #       name: drydock/u18java
+          #       tag: master
+          gradleCommand:  clean artifactoryPublish -b build.gradle
+          sourceLocation:       complete/  #required
+          configFileLocation:   CI  #required
+          configFileName:       grdl-art-config  #required
+          forceXrayScan:        false #optional
+          autoPublishBuildInfo: false #optional
+          inputResources:
+            - name: src_code_backapp_grdl
+          integrations:
+            - name: artifactory_eu
+        execution:
+          onSuccess:
+            - add_run_variables myAppVersion=`if [[ ${res_src_code_backapp_grdl_isGitTag} == "True" ]]; then echo ${res_src_code_backapp_grdl_gitTagName}; else echo ${myDemoVersion}; fi` 
+            - add_run_variables myDockerTag="${myAppVersion}-${res_src_code_backapp_grdl_commitSha}"
+            - echo $myAppVersion
+            - echo $myDockerTag
+          
+      - name: publish_bi_backapp_grdl
+        type: PublishBuildInfo
+        configuration:
+          inputSteps:
+            - name: build_backapp_grdl
+          outputResources:
+            - name: bi_backapp_grdl
+        execution:
+          onStart:
+            - echo "Preparing for Xray scan..."
+          onSuccess:
+            - echo build name / build number ${res_bi_backapp_grdl_buildName} ${res_bi_backapp_grdl_buildNumber}
+      
+      - name: scan_backapp_grdl
+        type: Bash
+        configuration:
+          integrations:
+            - name: artifactory_eu
+          inputResources:
+            - name: bi_backapp_grdl
+        execution:
+          onStart:
+            - echo ${res_bi_backapp_grdl_buildName}
+            - echo ${res_bi_backapp_grdl_buildNumber}
+            - jfrog rt bs ${res_bi_backapp_grdl_buildName} ${res_bi_backapp_grdl_buildNumber} --fail=false
+
+      - name: promote_bi_backapp_grdl
+        type: PromoteBuild
+        configuration:
+          targetRepository: ${grdlPromoteRepo}
+          includeDependencies: false
+          status: SANDBOX_OK
+          comment: Unit testing and Xray scan passed succesfully
+          copy: false
+          inputResources:
+            - name: bi_backapp_grdl
+              trigger: true
+          inputSteps:
+            - name: scan_backapp_grdl
+          outputResources:
+            - name: pb_backapp_grdl            
+            - name: bi_backapp_grdl_promoted_staging
+        execution:  
+          onStart:
+            - echo ${res_bi_backapp_grdl_buildName} 
+            - echo ${res_bi_backapp_grdl_buildNumber} 
+          onSuccess:
+            - jfrog rt sp --build=${res_bi_backapp_grdl_buildName}/${res_bi_backapp_grdl_buildNumber} app-grdl-rc-local/ "app.version=${myAppVersion}"
+            - write_output pb_backapp_grdl dockerAppTag=${myDockerTag}
+            - write_output pb_backapp_grdl biNumber=${res_bi_backapp_grdl_buildNumber}
+
+  - name: backapp_grdl_docker
+    configuration:
+      environmentVariables:
+        readOnly:
+          dockerPushRepo: yannaws-app-docker.jfrog.io
+          dockerPromoteRepo: app-docker-rc-local
+    steps:
+      - name: build_backapp_grdl_docker
+        type: DockerBuild
+        configuration:
+          affinityGroup: swampup
+          dockerFileName: Dockerfile
+          dockerFileLocation: complete/CI/Docker/
+          dockerImageName: ${dockerPushRepo}/backapp-grdl
+          dockerImageTag: '${res_pb_backapp_grdl_dockerAppTag}'
+          inputResources:
+            - name: src_dockerfile_backapp_grdl
+            - name: pb_backapp_grdl
+            - name: fs_backapp_grdl
+            - name: bi_backapp_grdl_promoted_staging
+          integrations:
+            - name: artifactory_eu
+        execution:
+          onStart:
+            - echo ${res_pb_backapp_grdl_biNumber}
+          onSuccess:
+            - echo "Job well done!"
+            - echo ${res_pb_backapp_grdl_biNumber}
+
+      - name: publish_backapp_grdl_docker
+        type: DockerPush
+        configuration:
+          affinityGroup: swampup
+          targetRepository: ${dockerPushRepo}
+          autoPublishBuildInfo: true
+          inputSteps:
+            - name: build_backapp_grdl_docker
+          integrations:
+            - name: artifactory_eu
+          outputResources:
+            - name: bi_backapp_grdl_docker
+
+      - name: scan_bi_backapp_grdl_docker
+        type: Bash
+        configuration:
+          integrations:
+            - name: artifactory_eu
+          inputResources:
+            - name: bi_backapp_grdl_docker
+        execution:
+          onStart:
+            - echo ${res_bi_backapp_grdl_docker_buildName}
+            - echo ${res_bi_backapp_grdl_docker_buildNumber}
+            - jfrog rt bs ${res_bi_backapp_grdl_docker_buildName} ${res_bi_backapp_grdl_docker_buildNumber} --fail=false
+
+      - name: promote_bi_backapp_grdl_docker
+        type: PromoteBuild
+        configuration:
+          targetRepository: ${dockerPromoteRepo}/
+          includeDependencies: false
+          status: "DOCKER_SCAN_OK"
+          comment: "Xray scan passed succesfully"
+          copy: false
+          integrations:
+            - name: artifactory_eu
+          inputResources:
+            - name: bi_backapp_grdl_docker
+              trigger: true
+          inputSteps:
+            - name: scan_bi_backapp_grdl_docker
+          outputResources:
+            - name: bi_backapp_grdl_docker_promoted_staging
+        execution:
+          onSuccess:
+            - jfrog rt sp --build=${res_build_info_docker_backapp_buildName}/${res_build_info_docker_backapp_buildNumber} app-docker-rc-local/**/manifest.json "docker.tag=${myDockerTag}"
+            - write_output build_info_docker_backapp_promoted_staging "backregistry=\"${ArtIP}/app-docker-virtual\""
+            - write_output build_info_docker_backapp_promoted_staging "backimage=\"backapp\""
+            - write_output build_info_docker_backapp_promoted_staging "backtag=${myDockerTag}"
