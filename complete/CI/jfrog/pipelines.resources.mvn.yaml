@@ -49,7 +49,8 @@ resources:
       sourceArtifactory: artifactory_eu
       pattern: "${mvnPromoteRepo}/**/multi-module-application*.jar"
       target: app/multi-module-application-1.0.0.jar
-      props: "build.name=backapp_mvn;build.number=${res_pb_backapp_mvn_biNumber}"
+      # props: "build.name=backapp_mvn;build.number=${res_pb_backapp_mvn_biNumber}"
+      props: "build.name=backapp_mvn;build.number=${myTag}"
       flat: true
 
   - name: bi_backapp_mvn_docker
