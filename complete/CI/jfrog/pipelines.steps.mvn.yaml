@@ -110,7 +110,7 @@ pipelines:
           onStart:
             - echo ${res_pb_backapp_mvn_biNumber}
             - sudo ls -l /etc/ 
-            - sudo ls -l /etc/docker/daemon.json
+#            - sudo ls -l /etc/docker/daemon.json
             - sudo mkdir -p /etc/docker 
             - sudo jq -n  "{ \"insecure-registries\": [\"ninja-dev-docker.soleng-emea-staging.jfrog.team\"]}" > /etc/docker/daemon.json
             - sudo systemctl reload daemon
