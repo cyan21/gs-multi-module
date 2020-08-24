@@ -109,6 +109,7 @@ pipelines:
         execution:
           onStart:
             - echo ${res_pb_backapp_mvn_biNumber}
+            - jq . /etc/docker/daemon.json
           onSuccess:
             - echo "Job well done!"
             - echo ${res_pb_backapp_mvn_biNumber}
