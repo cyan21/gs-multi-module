@@ -3,7 +3,7 @@ pipelines:
     configuration:
       environmentVariables:
         readOnly:
-          myDemoVersion:  2.0.0
+          myDemoVersion:  2.0.3
           mvnPromoteRepo: ninja-rc-mvn-local
     steps:
       - name: build_backapp_mvn
@@ -108,7 +108,7 @@ pipelines:
               sudo jq -n  "{\"insecure-registries\": [\"${dockerRepoUrl}\"]}" > /etc/docker/daemon.json
             - sudo systemctl restart docker
             - sudo cat /etc/docker/daemon.json
-            - add_run_variables myTag="2.0.2" #${res_pb_backapp_mvn_dockerAppTag}
+            - add_run_variables myTag=${res_pb_backapp_mvn_dockerAppTag}
             - add_run_variables biNumber=${res_pb_backapp_mvn_biNumber}
       - name: build_backapp_mvn_docker
         type: DockerBuild
