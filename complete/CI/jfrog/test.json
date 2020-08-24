@@ -1,0 +1,7 @@
+{
+  "graph": "/data",
+  "mtu": 1460,
+  "insecure-registries": [
+    "jerome-docker-dev.artifactory-jerome.soleng-emea-staging.jfrog.team"
+  ]
+}
