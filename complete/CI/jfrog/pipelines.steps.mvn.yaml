@@ -108,6 +108,7 @@ pipelines:
             - sudo systemctl restart docker
             - sudo cat /etc/docker/daemon.json
             - add_run_variables myTag=${res_pb_backapp_mvn_dockerAppTag}
+            - add_run_variables biNumber=${res_pb_backapp_mvn_biNumber}
       - name: build_backapp_mvn_docker
         type: DockerBuild
         configuration:
