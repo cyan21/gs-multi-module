@@ -88,8 +88,9 @@ pipelines:
       environmentVariables:
         readOnly:
           dockerPushRepo: ninja-dev-docker
+          dockerRepoUrl: ninja-dev-docker.artifactory-eu.soleng-emea.jfrog.team
 #          myDockerImageName: yannaws-ninja-dev-docker.jfrog.io/backapp-mvn
-          myDockerImageName: ninja-dev-docker.artifactory-eu.soleng-emea.jfrog.team/backapp-mvn
+          myDockerImageName: ${dockerRepoUrl}/backapp-mvn
           dockerPromoteRepo: ninja-rc-docker-local
     steps:
       - name: setup_env
@@ -104,7 +105,7 @@ pipelines:
           onExecute:
             - sudo mkdir -p /etc/docker 
             - > 
-              sudo jq -n  '{"insecure-registries": ["ninja-dev-docker.artifactory-eu.jfrog.team"]}' > /etc/docker/daemon.json
+              sudo jq -n  '{"insecure-registries": ["${dockerRepoUrl}"]}' > /etc/docker/daemon.json
             - sudo systemctl restart docker
             - sudo cat /etc/docker/daemon.json
             - add_run_variables myTag=${res_pb_backapp_mvn_dockerAppTag}
