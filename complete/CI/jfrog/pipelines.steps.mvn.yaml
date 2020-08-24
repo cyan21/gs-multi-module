@@ -92,10 +92,10 @@ pipelines:
           myDockerImageName: ninja-dev-docker.artifactory-eu.soleng-emea.jfrog.team/backapp-mvn
           dockerPromoteRepo: ninja-rc-docker-local
     steps:
-      - name: set_env
+      - name: setup_env
         type: Bash
         configuration:
-          affinityGroup: dockerGroup
+          affinityGroup: swampup
           runtime:
             type: host
         execution:
@@ -113,6 +113,8 @@ pipelines:
           dockerFileLocation: complete/CI/Docker/
           dockerImageName: ${myDockerImageName}
           dockerImageTag: '${res_pb_backapp_mvn_dockerAppTag}'
+          inputSteps:
+            - name: setup_env
           inputResources:
             - name: src_dockerfile_backapp_mvn
             - name: pb_backapp_mvn
