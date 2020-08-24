@@ -107,6 +107,7 @@ pipelines:
               sudo jq -n  '{"insecure-registries": ["ninja-dev-docker.artifactory-eu.jfrog.team"]}' > /etc/docker/daemon.json
             - sudo systemctl restart docker
             - sudo cat /etc/docker/daemon.json
+            - add_run_variables myTag=${res_pb_backapp_mvn_dockerAppTag}
       - name: build_backapp_mvn_docker
         type: DockerBuild
         configuration:
@@ -114,7 +115,8 @@ pipelines:
           dockerFileName: Dockerfile
           dockerFileLocation: complete/CI/Docker/
           dockerImageName: ${myDockerImageName}
-          dockerImageTag: '${res_pb_backapp_mvn_dockerAppTag}'
+          dockerImageTag: '${myTag}'
+          # dockerImageTag: '${res_pb_backapp_mvn_dockerAppTag}'
           inputSteps:
             - name: setup_env
           inputResources:
