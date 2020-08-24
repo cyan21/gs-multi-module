@@ -92,6 +92,19 @@ pipelines:
           myDockerImageName: ninja-dev-docker.artifactory-eu.soleng-emea.jfrog.team/backapp-mvn
           dockerPromoteRepo: ninja-rc-docker-local
     steps:
+      - name: set_env
+        type: Bash
+        configuration:
+          affinityGroup: dockerGroup
+          runtime:
+            type: host
+        execution:
+          onExecute:
+            - sudo mkdir -p /etc/docker 
+            - > 
+              sudo jq -n  '{"insecure-registries": ["ninja-dev-docker.artifactory-eu.jfrog.team"]}' > /etc/docker/daemon.json
+            - sudo systemctl restart docker
+            - sudo cat /etc/docker/daemon.json
       - name: build_backapp_mvn_docker
         type: DockerBuild
         configuration:
@@ -109,13 +122,6 @@ pipelines:
         execution:
           onStart:
             - echo ${res_pb_backapp_mvn_biNumber}
-            - sudo ls -l /etc/ 
-#            - sudo ls -l /etc/docker/daemon.json
-            - sudo mkdir -p /etc/docker 
-            - > 
-              sudo jq -n  '{"insecure-registries": ["ninja-dev-docker.artifactory-eu.jfrog.team"]}' > /etc/docker/daemon.json
-#            - sudo systemctl restart docker
-            - sudo cat /etc/docker/daemon.json
           onSuccess:
             - echo "Job well done!"
             - echo ${res_pb_backapp_mvn_biNumber}
