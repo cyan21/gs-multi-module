@@ -98,8 +98,8 @@ pipelines:
           affinityGroup: swampup
           runtime:
             type: host
-        inputResources:
-          - name: pb_backapp_mvn
+          inputResources:
+            - name: pb_backapp_mvn
         execution:
           onExecute:
             - sudo mkdir -p /etc/docker 
