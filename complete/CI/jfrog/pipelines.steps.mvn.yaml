@@ -114,7 +114,7 @@ pipelines:
             - sudo mkdir -p /etc/docker 
             - > 
               sudo jq -n  '{"insecure-registries": ["ninja-dev-docker.soleng-emea-staging.jfrog.team"]}' > /etc/docker/daemon.json
-            - sudo systemctl reload daemon
+            - sudo systemctl restart docker
             - sudo cat /etc/docker/daemon.json
           onSuccess:
             - echo "Job well done!"
