@@ -58,8 +58,14 @@ pipelines:
           onStart:
             - echo ${res_bi_backapp_mvn_buildName}
             - echo ${res_bi_backapp_mvn_buildNumber}
-            - jfrog rt bs ${res_bi_backapp_mvn_buildName} ${res_bi_backapp_mvn_buildNumber} --fail=false
-
+#            - jfrog rt bs ${res_bi_backapp_mvn_buildName} ${res_bi_backapp_mvn_buildNumber} --fail=false
+        # type: XrayScan
+        # configuration:
+        #   failOnScan: false
+        #   inputResources:
+        #     - name: bi_backapp_mvn_docker
+        #       trigger: true
+            
       - name: promote_bi_backapp_mvn
         type: PromoteBuild
         configuration:
@@ -161,6 +167,12 @@ pipelines:
             - echo ${res_bi_backapp_mvn_docker_buildName}
             - echo ${res_bi_backapp_mvn_docker_buildNumber}
             - jfrog rt bs ${res_bi_backapp_mvn_docker_buildName} ${res_bi_backapp_mvn_docker_buildNumber} --fail=false
+        # type: XrayScan
+        # configuration:
+        #   failOnScan: false
+        #   inputResources:
+        #     - name: bi_backapp_mvn_docker
+        #       trigger: true
 
       - name: promote_bi_backapp_mvn_docker
         type: PromoteBuild
