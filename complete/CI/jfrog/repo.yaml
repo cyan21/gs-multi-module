@@ -60,6 +60,14 @@ virtualRepositories:
       - ninja-dev-mvn-local
       - ninja-jcenter-remote
     defaultDeploymentRepo: ninja-dev-mvn-local
+  ninja-mvn:
+    type: maven
+    repoLayout: maven-2-default
+    repositories:
+      - ninja-jcenter-remote
+      - ninja-rc-mvn-local
+      - ninja-uat-mvn-local
+      - ninja-prod-mvn-local
   ninja-dev-docker:
     type: docker
     dockerApiVersion: V2
