@@ -68,6 +68,7 @@ virtualRepositories:
       - ninja-rc-mvn-local
       - ninja-uat-mvn-local
       - ninja-prod-mvn-local
+    defaultDeploymentRepo: ninja-rc-mvn-local
   ninja-dev-docker:
     type: docker
     dockerApiVersion: V2
