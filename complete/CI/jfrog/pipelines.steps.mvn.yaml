@@ -128,7 +128,7 @@ pipelines:
           dockerFileLocation: complete/CI/Docker/
           dockerImageName: ${myDockerImageName}
           dockerImageTag: '${myTag}'
-          # dockerImageTag: '${res_pb_backapp_mvn_dockerAppTag}'
+          dockerOptions: --build-arg bJFROG_CLI_BUILD_URL="${int_artifactory_eu_url/%artifactory/ui}/pipelines/myPipelines/${pipeline_name}/${run_number}/build_${pipeline_name}?branch=jfrog-ode"
           inputSteps:
             - name: setup_env
           inputResources:
@@ -140,7 +140,6 @@ pipelines:
         execution:
           onStart:
             - echo ${res_pb_backapp_mvn_biNumber}
-            - export JFROG_CLI_BUILD_URL="${int_artifactory_eu_url/%artifactory/ui}/pipelines/myPipelines/${pipeline_name}/${run_number}/build_${pipeline_name}?branch=jfrog-ode"
 
       - name: publish_backapp_mvn_docker
         type: DockerPush
