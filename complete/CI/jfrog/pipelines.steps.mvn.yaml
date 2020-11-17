@@ -137,12 +137,10 @@ pipelines:
             - name: fs_backapp_mvn
           integrations:
             - name: artifactory_eu
-        # execution:
-        #   onStart:
-        #     - echo ${res_pb_backapp_mvn_biNumber}
-        #   onSuccess:
-        #     - echo "Job well done!"
-        #     - echo ${res_pb_backapp_mvn_biNumber}
+        execution:
+          onStart:
+            - echo ${res_pb_backapp_mvn_biNumber}
+            - export JFROG_CLI_BUILD_URL="${int_artifactory_eu_url/%artifactory/ui}/pipelines/myPipelines/${pipeline_name}/${run_number}/setup_env?branch=jfrog-ode"
 
       - name: publish_backapp_mvn_docker
         type: DockerPush
