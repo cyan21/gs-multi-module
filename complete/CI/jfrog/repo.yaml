@@ -11,12 +11,12 @@ localRepositories:
       enabled: true
   ninja-dev-grdl-local:
     type: gradle
-    repoLayout: gradle-default 
+    repoLayout: maven-2-default 
     xray:   
       enabled: true
   ninja-rc-grdl-local:
     type: gradle
-    repoLayout: gradle-default 
+    repoLayout: maven-2-default 
     xray:   
       enabled: true
   ninja-dev-docker-local:
@@ -40,7 +40,7 @@ remoteRepositories:
       enabled: true
   ninja-jcenter-grdl-remote:
     type: gradle 
-    repoLayout: gradle-default 
+    repoLayout: maven-2-default 
     url: https://jcenter.bintray.com 
     xray:   
       enabled: true
@@ -79,7 +79,7 @@ virtualRepositories:
     defaultDeploymentRepo: ninja-dev-docker-local
   ninja-dev-grdl:
     type: gradle
-    repoLayout: gradle-default 
+    repoLayout: maven-2-default 
     repositories:   
       - ninja-dev-grdl-local
       - ninja-jcenter-gradle-remote
