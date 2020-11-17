@@ -29,7 +29,7 @@ pipelines:
             - name: artifactory_eu
         execution:
           onStart:
-            - export JFROG_CLI_BUILD_URL="${int_artifactory_eu_url/%artifactory/ui}/pipelines/myPipelines/${pipeline_name}/${run_number}/setup_env?branch=${res_src_code_backapp_mvn_branchName}"
+            - export JFROG_CLI_BUILD_URL="${int_artifactory_eu_url/%artifactory/ui}/pipelines/myPipelines/${pipeline_name}/${run_number}/build_${pipeline_name}?branch=${res_src_code_backapp_mvn_branchName}"
           onSuccess:
             - add_run_variables myAppVersion=`if [[ ${res_src_code_backapp_mvn_isGitTag} == "True" ]]; then echo ${res_src_code_backapp_mvn_gitTagName}; else echo ${myDemoVersion}; fi` 
             - add_run_variables myDockerTag="${myAppVersion}-${res_src_code_backapp_mvn_commitSha}"
@@ -140,7 +140,7 @@ pipelines:
         execution:
           onStart:
             - echo ${res_pb_backapp_mvn_biNumber}
-            - export JFROG_CLI_BUILD_URL="${int_artifactory_eu_url/%artifactory/ui}/pipelines/myPipelines/${pipeline_name}/${run_number}/setup_env?branch=jfrog-ode"
+            - export JFROG_CLI_BUILD_URL="${int_artifactory_eu_url/%artifactory/ui}/pipelines/myPipelines/${pipeline_name}/${run_number}/build_${pipeline_name}?branch=jfrog-ode"
 
       - name: publish_backapp_mvn_docker
         type: DockerPush
