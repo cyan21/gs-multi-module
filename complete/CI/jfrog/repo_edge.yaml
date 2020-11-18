@@ -1,0 +1,24 @@
+localRepositories:   
+  ninja-mvn-release-local:
+    type: maven
+    repoLayout: maven-2-default 
+    xray:   
+      enabled: false
+  ninja-debian-release-local:
+    type: debian
+    repoLayout: simple-default 
+    xray:   
+      enabled: false
+virtualRepositories: 
+  ninja-release-mvn:
+    type: maven
+    repoLayout: maven-2-default
+    repositories:
+      - ninja-mvn-release-local
+    defaultDeploymentRepo: ninja-mvn-release-local
+  ninja-release-debian:
+    type: debian
+    repoLayout: simple-default 
+    repositories:   
+      - ninja-debian-release-local
+    defaultDeploymentRepo: ninja-debian-release-local
