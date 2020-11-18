@@ -92,7 +92,6 @@ resources:
       name: java-webapp
       version: "1"          # will be overriden by the CreateReleaseBundle step 
       isSigned: true
-      output: "ninja-mvn-release-local/$1"
 
   - name: aql_distrib_debian
     type: Aql
