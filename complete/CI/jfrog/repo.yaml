@@ -31,6 +31,11 @@ localRepositories:
     repoLayout: simple-default 
     xray:   
       enabled: true
+  ninja-release-debian-local:
+    type: debian
+    repoLayout: simple-default 
+    xray:   
+      enabled: true
 remoteRepositories: 
   ninja-jcenter-remote:
     type: maven
@@ -84,3 +89,9 @@ virtualRepositories:
       - ninja-dev-grdl-local
       - ninja-jcenter-gradle-remote
     defaultDeploymentRepo: ninja-dev-grdl-local
+  ninja-release-debian:
+    type: debian
+    repoLayout: simple-default 
+    repositories:   
+      - ninja-release-debian-local
+    defaultDeploymentRepo: ninja-release-debian-local

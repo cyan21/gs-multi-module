@@ -107,7 +107,7 @@ resources:
         distribution: "automatic"
       mappings:
         - name: java
-          input: "ninja-uat-mvn-local/(.*)"
+          input: "ninja-rc-mvn-local/(.*)"
           output: "ninja-mvn-release-local/$1"
         - name: debian
           input: "ninja-release-debian-local/pool/(.*)"
