@@ -25,6 +25,8 @@ pipelines:
             - name: src_code_backapp_grdl
           integrations:
             - name: artifactory_eu
+          outputResources:
+            - name: bi_backapp_grdl
         execution:
           onStart:
             - export JFROG_CLI_BUILD_URL="${int_artifactory_eu_url/%artifactory/ui}/pipelines/myPipelines/${pipeline_name}/${run_number}/build_${pipeline_name}?branch=${res_src_code_backapp_grdl_branchName}"
@@ -54,7 +56,7 @@ pipelines:
             - name: bi_backapp_grdl
               trigger: true
           inputSteps:
-            - name: scan_backapp_grdl
+            - name: scan_bi_backapp_grdl
           outputResources:
             - name: pb_backapp_grdl            
             - name: bi_backapp_grdl_promoted_staging
