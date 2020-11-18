@@ -1,0 +1,95 @@
+{
+    "general_data": {
+        "name": "ninja",
+        "description": "This is a new watch created using API V2",
+        "active": true
+    },
+    "project_resources": {
+        "resources": [
+            {
+                "type": "repository",
+                "name": "ninja-dev-mvn-local",
+                "bin_mgr_id": "unused",
+                "filters": [
+                    {
+                        "type": "regex",
+                        "value": ".*"
+                    }
+                ]
+            },
+            {
+                "type": "repository",
+                "name": "ninja-rc-mvn-local",
+                "bin_mgr_id": "unused",
+                "filters": [
+                    {
+                        "type": "regex",
+                        "value": ".*"
+                    }
+                ]
+            },
+            {
+                "type": "repository",
+                "name": "ninja-dev-docker-local",
+                "bin_mgr_id": "unused",
+                "filters": [
+                    {
+                        "type": "regex",
+                        "value": ".*"
+                    }
+                ]
+            },
+            {
+                "type": "repository",
+                "name": "ninja-rc-docker-local",
+                "bin_mgr_id": "unused",
+                "filters": [
+                    {
+                        "type": "regex",
+                        "value": ".*"
+                    }
+                ]
+            },
+            {
+                "type": "repository",
+                "repo_type": "remote",
+                "name": "ninja-jcenter-remote",
+                "bin_mgr_id": "unused",
+                "filters": [
+                    {
+                        "type": "regex",
+                        "value": ".*"
+                    }
+                ]
+            },  
+            {
+                "type": "repository",
+                "repo_type": "remote",
+                "name": "ninja-dockerhub-remote",
+                "bin_mgr_id": "unused",
+                "filters": [
+                    {
+                        "type": "regex",
+                        "value": ".*"
+                    }
+                ]
+            },  
+            {
+                "type": "build",
+                "bin_mgr_id": "unused",
+                "name": "backapp_mvn"
+            },
+            {
+                "type": "build",
+                "bin_mgr_id": "unused",
+                "name": "backapp_mvn_docker"
+            }
+        ]
+    },
+    "assigned_policies": [
+        {
+            "name": "global",
+            "type": "security"
+        }
+    ]
+}
