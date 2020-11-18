@@ -172,7 +172,7 @@ pipelines:
   - name: distrib_mvn
     steps:
       - name: package_app
-        type: PackageDebian
+        type: packaging/PackageDebian
         configuration:
           binaryLocation: "**/multi-module-application*.jar"
           buildName: backapp_mvn
