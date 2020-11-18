@@ -50,23 +50,12 @@ pipelines:
             # - echo build name / build number ${res_bi_backapp_mvn_buildName} ${res_bi_backapp_mvn_buildNumber}
       
       - name: scan_backapp_mvn
-        type: Bash
+        type: XrayScan
         configuration:
-          integrations:
-            - name: artifactory_eu
+          failOnScan: false
           inputResources:
             - name: bi_backapp_mvn
-        execution:
-          onStart:
-            - echo ${res_bi_backapp_mvn_buildName}
-            - echo ${res_bi_backapp_mvn_buildNumber}
-#            - jfrog rt bs ${res_bi_backapp_mvn_buildName} ${res_bi_backapp_mvn_buildNumber} --fail=false
-        # type: XrayScan
-        # configuration:
-        #   failOnScan: false
-        #   inputResources:
-        #     - name: bi_backapp_mvn_docker
-        #       trigger: true
+              trigger: true
             
       - name: promote_bi_backapp_mvn
         type: PromoteBuild
@@ -155,23 +144,12 @@ pipelines:
             - name: bi_backapp_mvn_docker
 
       - name: scan_bi_backapp_mvn_docker
-        type: Bash
+        type: XrayScan
         configuration:
-          integrations:
-            - name: artifactory_eu
+          failOnScan: false
           inputResources:
             - name: bi_backapp_mvn_docker
-        execution:
-          onStart:
-            - echo ${res_bi_backapp_mvn_docker_buildName}
-            - echo ${res_bi_backapp_mvn_docker_buildNumber}
-            - jfrog rt bs ${res_bi_backapp_mvn_docker_buildName} ${res_bi_backapp_mvn_docker_buildNumber} --fail=false
-        # type: XrayScan
-        # configuration:
-        #   failOnScan: false
-        #   inputResources:
-        #     - name: bi_backapp_mvn_docker
-        #       trigger: true
+              trigger: true
 
       - name: promote_bi_backapp_mvn_docker
         type: PromoteBuild
