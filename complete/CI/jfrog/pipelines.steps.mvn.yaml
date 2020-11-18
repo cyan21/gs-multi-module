@@ -35,20 +35,7 @@ pipelines:
             - add_run_variables myDockerTag="${myAppVersion}-${res_src_code_backapp_mvn_commitSha}"
             - echo $myAppVersion
             - echo $myDockerTag
-          
-      # - name: publish_bi_backapp_mvn
-      #   type: PublishBuildInfo
-      #   configuration:
-      #     inputSteps:
-      #       - name: build_backapp_mvn
-      #     outputResources:
-      #       - name: bi_backapp_mvn
-      #   execution:
-      #     onStart:
-      #       - echo "Preparing for Xray scan..."
-      #     onSuccess:
-            # - echo build name / build number ${res_bi_backapp_mvn_buildName} ${res_bi_backapp_mvn_buildNumber}
-      
+                
       - name: scan_backapp_mvn
         type: XrayScan
         configuration:
@@ -78,9 +65,16 @@ pipelines:
             - echo ${res_bi_backapp_mvn_buildName} 
             - echo ${res_bi_backapp_mvn_buildNumber} 
           onSuccess:
-            - jfrog rt sp --build=${res_bi_backapp_mvn_buildName}/${res_bi_backapp_mvn_buildNumber} app-mvn-rc-local/ "app.version=${myAppVersion}"
             - write_output pb_backapp_mvn dockerAppTag=${myDockerTag}
             - write_output pb_backapp_mvn biNumber=${res_bi_backapp_mvn_buildNumber}
+            - write_output pb_backapp_mvn appVersion=${myAppVersion}
+            - which jfrog 
+            - jfrog --version
+            - curl -fL https://getcli.jfrog.io | sh
+            - chmod u+x jfrog 
+            - sudo mv jfrog $(which jfrog)
+            - jfrog --version
+            - jfrog rt sp --build=${res_bi_backapp_mvn_buildName}/${res_bi_backapp_mvn_buildNumber} --exclusions="*.pom;*library*" ${mvnPromoteRepo}/ "app.version=${myAppVersion};app.name=ninja"
 
   - name: backapp_mvn_docker
     configuration:
@@ -174,3 +168,60 @@ pipelines:
             - write_output build_info_docker_backapp_promoted_staging "backregistry=\"${ArtIP}/app-docker-virtual\""
             - write_output build_info_docker_backapp_promoted_staging "backimage=\"backapp\""
             - write_output build_info_docker_backapp_promoted_staging "backtag=${myDockerTag}"
+
+  - name: distrib_mvn
+    steps:
+      - name: package_app
+        type: PackageDebian
+        configuration:
+          binaryLocation: "**/multi-module-application*.jar"
+          buildName: backapp_mvn
+          buildNumber: ${res_pb_backapp_mvn_biNumber}
+          appExtension: "jar"
+          debianPkgName: "ninja"
+          debianBuildName: "webapp-debian"
+          targetDebianRepo: "ninja-release-debian"
+          propsToSet: "app.version=${appVersion};app.name=ninja"
+          integrations:
+            - name: artifactory_eu
+          inputResources: 
+            - name: pb_backapp_mvn          # all properties can then be spread to the pipeline via add_run_variable (see Execution)
+          outputResources:
+            - name: aql_distrib_debian
+        execution:
+          onStart: 
+            - add_run_variables appVersion=${res_pb_backapp_mvn_appVersion}
+            - echo ${appVersion}
+        #   onComplete:
+        #     - echo ${res_bi_mvn_debian_buildNumber}
+        #     - add_run_variables debianBiNumber=${res_bi_mvn_debian_buildNumber}
+
+      - name: init_rb_debian_mvn
+        type: CreateReleaseBundle 
+        configuration:
+          releaseBundleName: java-webapp 
+          releaseBundleVersion: ${appVersion} 
+          dryRun: false
+          sign: true 
+          description: automatic creation 
+          releaseNotes:
+            syntax: markdown
+            content: |
+              # Description 
+              super release 
+              * Feature 1 
+              * Bigfix 1
+          inputResources:
+            - name: aql_distrib_debian
+          outputResources:
+            - name: rb_mvn_debian 
+
+      - name: distribute_mvn_debian
+        type: DistributeReleaseBundle
+        configuration:
+          dryRun: false 
+          inputResources:
+            - name: rb_mvn_debian 
+              trigger: true   
+            - name: dr_mvn_debian 
+              trigger: true  

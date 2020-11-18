@@ -66,3 +66,60 @@ resources:
       sourceArtifactory: artifactory_eu
       buildName: backapp_mvn_docker
       buildNumber: '${run_number}'
+
+
+###### DISTRIBUTION
+
+  - name: distribution_mvn
+    type: GitRepo
+    configuration:
+      gitProvider: yann_github
+      path: cyan21/distribution-pipelines
+      branches:
+        include: master
+
+  - name: bi_mvn_debian
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: artifactory_eu
+      buildName: webapp-debian
+      buildNumber: 1
+
+  - name: rb_mvn_debian
+    type: ReleaseBundle
+    configuration:
+      sourceDistribution: distribution_eu
+      name: java-webapp
+      version: "1"          # will be overriden by the CreateReleaseBundle step 
+      isSigned: true
+      output: "ninja-mvn-release-local/$1"
+
+  - name: aql_distrib_debian
+    type: Aql
+    configuration:
+      sourceArtifactory: artifactory_eu
+      query: > 
+        items.find({
+        "$and": [
+        {"@app.version": "${appVersion}"},
+        {"@app.name": "ninja"}
+        ]})
+      addedProperties:
+        distribution: "automatic"
+      mappings:
+        - name: java
+          input: "ninja-uat-mvn-local/(.*)"
+          output: "ninja-mvn-release-local/$1"
+        - name: debian
+          input: "ninja-release-debian-local/pool/(.*)"
+          output: "ninja-debian-release-local/pool/$1"
+
+  - name: dr_mvn_debian 
+    type: DistributionRule
+    configuration:
+      sourceDistribution: distribution_eu
+      serviceName: "*"         
+      siteName: "*"
+      cityName: "New York City"
+      countryCodes:
+        - "US"
