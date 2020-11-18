@@ -4,7 +4,7 @@ pipelines:
       environmentVariables:
         readOnly:
           myDemoVersion:  2.0.0
-          grdlPromoteRepo: app-grdl-rc-local
+          grdlPromoteRepo: ninja-rc-grdl-local
     steps:
       - name: build_backapp_grdl
         type: GradleBuild
@@ -20,43 +20,27 @@ pipelines:
           configFileLocation:   CI  #required
           configFileName:       grdl-art-config  #required
           forceXrayScan:        false #optional
-          autoPublishBuildInfo: false #optional
+          autoPublishBuildInfo: true #optional
           inputResources:
             - name: src_code_backapp_grdl
           integrations:
             - name: artifactory_eu
         execution:
+          onStart:
+            - export JFROG_CLI_BUILD_URL="${int_artifactory_eu_url/%artifactory/ui}/pipelines/myPipelines/${pipeline_name}/${run_number}/build_${pipeline_name}?branch=${res_src_code_backapp_grdl_branchName}"
           onSuccess:
             - add_run_variables myAppVersion=`if [[ ${res_src_code_backapp_grdl_isGitTag} == "True" ]]; then echo ${res_src_code_backapp_grdl_gitTagName}; else echo ${myDemoVersion}; fi` 
             - add_run_variables myDockerTag="${myAppVersion}-${res_src_code_backapp_grdl_commitSha}"
             - echo $myAppVersion
             - echo $myDockerTag
           
-      - name: publish_bi_backapp_grdl
-        type: PublishBuildInfo
+      - name: scan_bi_backapp_grdl
+        type: XrayScan
         configuration:
-          inputSteps:
-            - name: build_backapp_grdl
-          outputResources:
-            - name: bi_backapp_grdl
-        execution:
-          onStart:
-            - echo "Preparing for Xray scan..."
-          onSuccess:
-            - echo build name / build number ${res_bi_backapp_grdl_buildName} ${res_bi_backapp_grdl_buildNumber}
-      
-      - name: scan_backapp_grdl
-        type: Bash
-        configuration:
-          integrations:
-            - name: artifactory_eu
+          failOnScan: false
           inputResources:
             - name: bi_backapp_grdl
-        execution:
-          onStart:
-            - echo ${res_bi_backapp_grdl_buildName}
-            - echo ${res_bi_backapp_grdl_buildNumber}
-            - jfrog rt bs ${res_bi_backapp_grdl_buildName} ${res_bi_backapp_grdl_buildNumber} --fail=false
+              trigger: true
 
       - name: promote_bi_backapp_grdl
         type: PromoteBuild
@@ -87,8 +71,12 @@ pipelines:
     configuration:
       environmentVariables:
         readOnly:
-          dockerPushRepo: yannaws-app-docker.jfrog.io
-          dockerPromoteRepo: app-docker-rc-local
+          # dockerPushRepo: yannaws-app-docker.jfrog.io
+          # dockerPromoteRepo: app-docker-rc-local
+          dockerPushRepo: ninja-dev-docker
+          dockerRepoUrl: ninja-dev-docker.artifactory-eu-yannc3-0.soleng-emea-staging.jfrog.team:80
+          myDockerImageName: ${dockerRepoUrl}/backapp-grdl
+          dockerPromoteRepo: ninja-rc-docker-local
     steps:
       - name: build_backapp_grdl_docker
         type: DockerBuild
@@ -126,17 +114,12 @@ pipelines:
             - name: bi_backapp_grdl_docker
 
       - name: scan_bi_backapp_grdl_docker
-        type: Bash
+        type: XrayScan
         configuration:
-          integrations:
-            - name: artifactory_eu
+          failOnScan: false
           inputResources:
             - name: bi_backapp_grdl_docker
-        execution:
-          onStart:
-            - echo ${res_bi_backapp_grdl_docker_buildName}
-            - echo ${res_bi_backapp_grdl_docker_buildNumber}
-            - jfrog rt bs ${res_bi_backapp_grdl_docker_buildName} ${res_bi_backapp_grdl_docker_buildNumber} --fail=false
+              trigger: true
 
       - name: promote_bi_backapp_grdl_docker
         type: PromoteBuild
