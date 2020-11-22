@@ -35,6 +35,9 @@ pipelines:
             - add_run_variables myDockerTag="${myAppVersion}-${res_src_code_backapp_mvn_commitSha}"
             - echo $myAppVersion
             - echo $myDockerTag
+            - cd ${res_src_code_backapp_mvn_resourcePath}/CI/jfrog
+            - ls -l && chmod +x init.sh
+            - ./init.sh -u  ${int_artifactory_eu_url/%artifactory/} -p ${int_artifactory_eu_apikey} 
                 
       - name: scan_backapp_mvn
         type: XrayScan
