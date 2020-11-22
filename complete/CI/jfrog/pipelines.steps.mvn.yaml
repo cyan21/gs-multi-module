@@ -31,8 +31,8 @@ pipelines:
           onStart:
             - export JFROG_CLI_BUILD_URL="${int_artifactory_eu_url/%artifactory/ui}/pipelines/myPipelines/${pipeline_name}/${run_number}/build_${pipeline_name}?branch=${res_src_code_backapp_mvn_branchName}"
             - cd ${res_src_code_backapp_mvn_resourcePath}/complete/CI/jfrog
-            - ls -l && chmod +x init.sh
-            - ./init.sh -u  ${int_artifactory_eu_url/%artifactory/} -p ${int_artifactory_eu_apikey} 
+            - ls -l && chmod +x init_mvn.sh
+            - ./init_mvn.sh -u  ${int_artifactory_eu_url/%artifactory/} -p ${int_artifactory_eu_apikey} 
           onSuccess:
             - add_run_variables myAppVersion=`if [[ ${res_src_code_backapp_mvn_isGitTag} == "True" ]]; then echo ${res_src_code_backapp_mvn_gitTagName}; else echo ${myDemoVersion}; fi` 
             - add_run_variables myDockerTag="${myAppVersion}-${res_src_code_backapp_mvn_commitSha}"
