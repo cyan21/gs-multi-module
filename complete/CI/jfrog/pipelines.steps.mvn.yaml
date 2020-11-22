@@ -30,14 +30,14 @@ pipelines:
         execution:
           onStart:
             - export JFROG_CLI_BUILD_URL="${int_artifactory_eu_url/%artifactory/ui}/pipelines/myPipelines/${pipeline_name}/${run_number}/build_${pipeline_name}?branch=${res_src_code_backapp_mvn_branchName}"
+            - cd ${res_src_code_backapp_mvn_resourcePath}/CI/jfrog
+            - ls -l && chmod +x init.sh
+            - ./init.sh -u  ${int_artifactory_eu_url/%artifactory/} -p ${int_artifactory_eu_apikey} 
           onSuccess:
             - add_run_variables myAppVersion=`if [[ ${res_src_code_backapp_mvn_isGitTag} == "True" ]]; then echo ${res_src_code_backapp_mvn_gitTagName}; else echo ${myDemoVersion}; fi` 
             - add_run_variables myDockerTag="${myAppVersion}-${res_src_code_backapp_mvn_commitSha}"
             - echo $myAppVersion
             - echo $myDockerTag
-            - cd ${res_src_code_backapp_mvn_resourcePath}/CI/jfrog
-            - ls -l && chmod +x init.sh
-            - ./init.sh -u  ${int_artifactory_eu_url/%artifactory/} -p ${int_artifactory_eu_apikey} 
                 
       - name: scan_backapp_mvn
         type: XrayScan
