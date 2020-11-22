@@ -84,7 +84,7 @@ pipelines:
       environmentVariables:
         readOnly:
           dockerPushRepo: ninja-dev-docker
-          dockerRepoUrl: ninja-dev-docker.artifactory-eu-yannc3-0.soleng-emea-staging.jfrog.team:80
+          dockerRepoUrl: ninja-dev-docker.artifactory-eu-yannc4-0.soleng-emea-staging.jfrog.team:80
 #          myDockerImageName: yannaws-ninja-dev-docker.jfrog.io/backapp-mvn
           myDockerImageName: ${dockerRepoUrl}/backapp-mvn
           dockerPromoteRepo: ninja-rc-docker-local
