@@ -30,7 +30,7 @@ pipelines:
         execution:
           onStart:
             - export JFROG_CLI_BUILD_URL="${int_artifactory_eu_url/%artifactory/ui}/pipelines/myPipelines/${pipeline_name}/${run_number}/build_${pipeline_name}?branch=${res_src_code_backapp_mvn_branchName}"
-            - cd ${res_src_code_backapp_mvn_resourcePath}/CI/jfrog
+            - cd ${res_src_code_backapp_mvn_resourcePath}/complete/CI/jfrog
             - ls -l && chmod +x init.sh
             - ./init.sh -u  ${int_artifactory_eu_url/%artifactory/} -p ${int_artifactory_eu_apikey} 
           onSuccess:
