@@ -17,7 +17,7 @@ resources:
     type: GitRepo
     configuration:
       files:
-        include: ^complete\/CI\/Docker\/Dockerfile      
+        include: ^complete\/CI\/Docker\/.+      
       gitProvider: yann_github
       path: cyan21/gs-multi-module
       branches:
