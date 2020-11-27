@@ -113,6 +113,7 @@ pipelines:
         execution:
           onStart:
             - ls -la ${res_fs_backapp_mvn_resourcePath}
+            - echo ${res_src_dockerfile_backapp_mvn_resourcePath}
             - cp ${res_fs_backapp_mvn_resourcePath}/multi-module-application-${runVarAppVersion}.jar ${res_src_dockerfile_backapp_mvn_resourcePath}/back/CI/Docker/multi-module-application.jar
             - ls -la ${res_src_dockerfile_backapp_mvn_resourcePath}/back/CI/Docker/
             - add_run_variables runVarGitCommit=${res_src_dockerfile_backapp_mvn_commitSha}
