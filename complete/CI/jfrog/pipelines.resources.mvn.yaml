@@ -101,7 +101,7 @@ resources:
       query: > 
         items.find({
         "$and": [
-        {"@app.version": "${appVersion}"},
+        {"@app.version": "${runVarAppVersion}"},
         {"@app.name": "ninja"}
         ]})
       addedProperties:
