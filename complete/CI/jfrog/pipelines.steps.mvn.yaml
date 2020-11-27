@@ -66,6 +66,7 @@ pipelines:
           onSuccess:
             - write_output pb_backapp_mvn appVersion=${runVarAppVersion}
             - write_output pb_backapp_mvn appCommitSHA=${runVarGitCommit}
+            - write_output pb_backapp_mvn biNumber=${res_bi_backapp_mvn_buildNumber}
 
   - name: backapp_mvn_docker
     configuration:
@@ -181,7 +182,7 @@ pipelines:
           integrations:
             - name: artifactory_eu
           inputResources: 
-            - name: pb_backapp_mvn_docker
+            - name: pb_backapp_mvn
           outputResources:
             - name: aql_distrib_debian
         execution:
