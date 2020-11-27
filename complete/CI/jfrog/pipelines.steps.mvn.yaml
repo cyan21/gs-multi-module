@@ -178,7 +178,7 @@ pipelines:
           debianPkgName: "ninja"
           debianBuildName: "webapp-debian"
           targetDebianRepo: "ninja-release-debian"
-          propsToSet: "app.version=${runVarAppVersion};app.name=ninja"
+          propsToSet: "app.version=${res_pb_backapp_mvn_appVersion};app.name=ninja"
           integrations:
             - name: artifactory_eu
           inputResources: 
@@ -187,7 +187,8 @@ pipelines:
             - name: aql_distrib_debian
         execution:
           onStart: 
-            - add_run_variables runVarAppVersion=${res_pb_backapp_mvn_docker_newTag}
+#            - add_run_variables runVarAppVersion=${res_pb_backapp_mvn_docker_newTag}
+            - add_run_variables runVarAppVersion=${res_pb_backapp_mvn_appVersion}
             - echo ${runVarAppVersion}
 
       - name: init_rb_debian_mvn
