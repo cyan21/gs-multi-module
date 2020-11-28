@@ -3,7 +3,7 @@ pipelines:
     configuration:
       environmentVariables:
         readOnly:
-          runVarMvnPromoteRepo: ninja-rc-mvn-local
+          envVarMvnPromoteRepo: ninja-rc-mvn-local
     steps:
       - name: build_backapp_mvn
         type: MvnBuild
@@ -32,7 +32,7 @@ pipelines:
             - add_run_variables runVarGitCommit=${res_src_code_backapp_mvn_commitSha}
             - echo $runVarAppVersion
             - echo $runVarGitCommit
-            - jfrog rt sp --build=${res_bi_backapp_mvn_buildName}/${res_bi_backapp_mvn_buildNumber} --exclusions="*.pom;*library*" ${runVarMvnPromoteRepo}/ "src.commit.sha=${runVarGitCommit};app.version=${runVarAppVersion};app.name=ninja"
+            - jfrog rt sp --build=${res_bi_backapp_mvn_buildName}/${res_bi_backapp_mvn_buildNumber} --exclusions="*.pom;*library*" ${envVarMvnPromoteRepo}/ "src.commit.sha=${runVarGitCommit};app.version=${runVarAppVersion};app.name=ninja"
                 
       - name: scan_backapp_mvn
         type: XrayScan
@@ -45,7 +45,7 @@ pipelines:
       - name: promote_bi_backapp_mvn
         type: PromoteBuild
         configuration:
-          targetRepository: ${runVarMvnPromoteRepo}
+          targetRepository: ${envVarMvnPromoteRepo}
           includeDependencies: false
           status: SANDBOX_OK
           comment: Unit testing and Xray scan passed succesfully
