@@ -32,7 +32,7 @@ pipelines:
             - add_run_variables runVarGitCommit=${res_src_code_backapp_mvn_commitSha}
             - echo $runVarAppVersion
             - echo $runVarGitCommit
-            - jfrog rt sp --build=${res_bi_backapp_mvn_buildName}/${res_bi_backapp_mvn_buildNumber} --exclusions="*.pom;*library*" ${envVarMvnPromoteRepo}/ "src.commit.sha=${runVarGitCommit};app.version=${runVarAppVersion};app.name=ninja"
+            - jfrog rt sp --build=${res_bi_backapp_mvn_buildName}/${run_number} --exclusions="*.pom;*library*" ${envVarMvnPromoteRepo}/ "src.commit.sha=${runVarGitCommit};app.version=${runVarAppVersion};app.name=ninja"
                 
       - name: scan_backapp_mvn
         type: XrayScan
@@ -133,7 +133,7 @@ pipelines:
         execution:
           onSuccess:
             - echo "${envVarDockerPushRepo}/backapp-mvn/${runVarAppVersion}/manifest.json"
-            - jfrog rt sp --build=${res_bi_backapp_mvn_docker_buildName}/${res_bi_backapp_mvn_docker_buildNumber} ${envVarDockerPushRepo}/backapp-mvn/${runVarAppVersion}/manifest.json "app.version=${runVarAppVersion};app.commit.sha=${runVarAppCommitSHA};dockerfile.commit.sha=${runVarGitCommit}"
+            - jfrog rt sp --build=${res_bi_backapp_mvn_docker_buildName}/${run_number} ${envVarDockerPushRepo}/backapp-mvn/${runVarAppVersion}/manifest.json "app.version=${runVarAppVersion};app.commit.sha=${runVarAppCommitSHA};dockerfile.commit.sha=${runVarGitCommit}"
 
       - name: scan_bi_backapp_mvn_docker
         type: XrayScan
