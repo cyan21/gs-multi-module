@@ -71,14 +71,6 @@ resources:
 
 ###### DISTRIBUTION
 
-  # - name: distribution_mvn
-  #   type: GitRepo
-  #   configuration:
-  #     gitProvider: yann_github
-  #     path: cyan21/distribution-pipelines
-  #     branches:
-  #       include: master
-
   - name: bi_mvn_debian
     type: BuildInfo
     configuration:

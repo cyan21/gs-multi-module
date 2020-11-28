@@ -3,7 +3,6 @@ pipelines:
     configuration:
       environmentVariables:
         readOnly:
-          myDemoVersion:  1.1.0
           runVarMvnPromoteRepo: ninja-rc-mvn-local
     steps:
       - name: build_backapp_mvn
