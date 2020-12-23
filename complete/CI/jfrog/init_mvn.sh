@@ -4,10 +4,12 @@
 # requires : XRAY POLICY (see policy name in watch.json)
 
 usage() {
-    echo "$0 -u <JPD_URL> -l <ADMIN_USER> -p <ADMIN_PASS>"
+    echo "$0 -u <JPD_URL> -l <ADMIN_USER> -p <ADMIN_PASS> -e <EDGE_URL>"
 }
 
 JPD_URL="http://artifactory-eu-yannc3-0.soleng-emea-staging.jfrog.team"
+EDGE_URL="http://edge-us-yannc3-0.soleng-emea-staging.jfrog.team"
+
 ADMIN_USER="admin"
 BUILD_NAMES="backapp_mvn,backapp_mvn_docker"  #list with comma as a separator
 
@@ -27,9 +29,14 @@ fi
 creds="-u$ADMIN_USER:$ADMIN_PASS"
 
 # create repo
-echo "[ARTIFACTORY] creating repositories ..."
+echo "[ARTIFACTORY] creating repositories on Artifactory..."
 curl -XPATCH $creds \
     -H "Content-Type: application/yaml" -T repo.yaml \
+    $JPD_URL/artifactory/api/system/configuration 
+
+echo "[ARTIFACTORY] creating repositories on Edge ..."
+curl -XPATCH $creds \
+    -H "Content-Type: application/yaml" -T repo_edge.yaml \
     $JPD_URL/artifactory/api/system/configuration 
 
 # index build

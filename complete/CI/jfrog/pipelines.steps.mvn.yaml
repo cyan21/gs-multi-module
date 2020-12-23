@@ -4,6 +4,7 @@ pipelines:
       environmentVariables:
         readOnly:
           envVarMvnPromoteRepo: ninja-rc-mvn-local
+          envVarEdgeUrl: http://edge-us-yannc3-0.soleng-emea-staging.jfrog.team:80
     steps:
       - name: build_backapp_mvn
         type: MvnBuild
@@ -25,7 +26,7 @@ pipelines:
             - export JFROG_CLI_BUILD_URL="${int_artifactory_eu_url/%artifactory/ui}/pipelines/myPipelines/${pipeline_name}/${run_number}/build_${pipeline_name}?branch=${res_src_code_backapp_mvn_branchName}"
             - cd ${res_src_code_backapp_mvn_resourcePath}/complete/CI/jfrog
             - ls -l && chmod +x init_mvn.sh
-            - ./init_mvn.sh -u  ${int_artifactory_eu_url/%artifactory/} -p ${int_artifactory_eu_apikey} 
+            - ./init_mvn.sh -u  ${int_artifactory_eu_url/%artifactory/} -p ${int_artifactory_eu_apikey} -e "${envVarEdgeUrl}"
           onSuccess:
 #            - add_run_variables myAppVersion=`if [[ ${res_src_code_backapp_mvn_isGitTag} == "True" ]]; then echo ${res_src_code_backapp_mvn_gitTagName}; else echo ${myDemoVersion}; fi` 
             - add_run_variables runVarAppVersion=`sed -n "s/[[:space:]]*<version>\(.*\)<\/version>/\1/p" ${res_src_code_backapp_mvn_resourcePath}/complete/pom.xml `
@@ -71,7 +72,7 @@ pipelines:
     configuration:
       environmentVariables:
         readOnly:
-          envVarDockerRepoUrl: ninja-dev-docker.artifactory-eu-yannc4-0.soleng-emea-staging.jfrog.team:80
+          envVarDockerRepoUrl: ninja-dev-docker.artifactory-eu-yannc3-0.soleng-emea-staging.jfrog.team:80
           envVarDockerPushRepo: ninja-dev-docker
 #          envVarDockerImageName: yannaws-ninja-dev-docker.jfrog.io/backapp-mvn
           envVarDockerImageName: ${envVarDockerRepoUrl}/backapp-mvn
