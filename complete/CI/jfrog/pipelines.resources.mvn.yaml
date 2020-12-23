@@ -10,7 +10,7 @@ resources:
       gitProvider: yann_github
       path: cyan21/gs-multi-module
       branches:
-        include: jfrog-ode-yannc3
+        include: jfrog-ode
 
 # DOCKER PIPELINE
   - name: src_dockerfile_backapp_mvn
@@ -21,7 +21,7 @@ resources:
       gitProvider: yann_github
       path: cyan21/gs-multi-module
       branches:
-        include: jfrog-ode-yannc3
+        include: jfrog-ode
 
   # Build info for the published mvn App
   - name: bi_backapp_mvn

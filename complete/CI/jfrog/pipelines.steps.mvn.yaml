@@ -4,7 +4,7 @@ pipelines:
       environmentVariables:
         readOnly:
           envVarMvnPromoteRepo: ninja-rc-mvn-local
-          envVarEdgeUrl: http://edge-us-yannc3-0.soleng-emea-staging.jfrog.team:80
+          envVarEdgeUrl: http://edge-us-yannc4-0.soleng-emea-staging.jfrog.team:80
     steps:
       - name: build_backapp_mvn
         type: MvnBuild

@@ -8,7 +8,7 @@ usage() {
 }
 
 JPD_URL="http://artifactory-eu-yannc3-0.soleng-emea-staging.jfrog.team"
-EDGE_URL="http://edge-us-yannc3-0.soleng-emea-staging.jfrog.team"
+EDGE_URL="http://edge-us-yannc4-0.soleng-emea-staging.jfrog.team"
 
 ADMIN_USER="admin"
 BUILD_NAMES="backapp_mvn,backapp_mvn_docker"  #list with comma as a separator
