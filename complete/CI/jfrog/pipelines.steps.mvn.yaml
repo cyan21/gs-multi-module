@@ -72,7 +72,7 @@ pipelines:
     configuration:
       environmentVariables:
         readOnly:
-          envVarDockerRepoUrl: ninja-dev-docker.artifactory-eu-yannc3-0.soleng-emea-staging.jfrog.team:80
+          envVarDockerRepoUrl: ninja-dev-docker.artifactory-eu-yannc4-0.soleng-emea-staging.jfrog.team:80
           envVarDockerPushRepo: ninja-dev-docker
 #          envVarDockerImageName: yannaws-ninja-dev-docker.jfrog.io/backapp-mvn
           envVarDockerImageName: ${envVarDockerRepoUrl}/backapp-mvn
