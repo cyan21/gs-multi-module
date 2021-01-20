@@ -1,9 +1,0 @@
-version: 1
-type: gradle 
-useWrapper: false
-resolver:
-  serverID: artifactory_eu
-  repo: ninja-dev-grdl
-deployer:
-  serverID: artifactory_eu
-  repo: ninja-dev-grdl
