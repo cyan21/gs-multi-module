@@ -1,0 +1,67 @@
+# INPUT 
+MvnPromoteRepo: ninja-rc-mvn-local
+EdgeUrl: 'http://edge-us-yannc4-0.soleng-emea-staging.jfrog.team:80'
+
+ArtifactoryIntegration: artifactory_eu
+
+GitRepoMvn:
+  name: src_code_backapp_mvn
+  gitProvider: yann_github
+  path: cyan21/gs-multi-module
+  branches:
+    exclude: 'master'
+    include: 'jfrog-ode'
+  files:
+    exclude: '^complete\/CI\/.+'
+    include: '^complete\/.+'
+
+GitRepoContainer:
+  name: src_dockerfile_backapp_mvn
+  gitProvider: yann_github
+  path: cyan21/gs-multi-module
+  branches:
+    exclude: 'master'
+    include: 'jfrog-ode'
+  files:
+    include: '^complete\/CI\/Docker\/.+'
+
+BuildInfoMvn:
+  resourceName: bi_backapp_mvn
+  name: backapp_mvn
+  autoPublishBuildInfo: true
+
+BuildInfoMvnPromoted:
+  resourceName: bi_backapp_mvn_promoted_staging
+
+BuildInfoContainer:
+  resourceName: bi_backapp_mvn_docker
+  name: backapp_mvn_docker
+  autoPublishBuildInfo: true
+
+BuildInfoContainerPromoted:
+  resourceName: bi_backapp_mvn_docker_promoted_staging
+
+PropertyBagMvn: pb_backapp_mvn
+
+PropertyBagContainer: pb_backapp_mvn_docker
+
+FileSpecMvn:
+  name: fs_backapp_mvn
+  pattern:
+  flat: true
+
+Pipeline:
+  mvnNname: backapp_mvn
+  mvnContainerName: backapp_mvn_docker
+
+
+MvnBuild:
+  stepName: build_backapp_mvn
+  goals: "clean package"
+  sourceLocation:       complete/
+  configFileLocation:   CI
+  configFileName:       mvn-art-config
+  forceXrayScan:        false
+  autoPublishBuildInfo: true
+  
+XrayMvnStepName: scan_backapp_mvn
