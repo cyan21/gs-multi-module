@@ -10,7 +10,7 @@ GitRepoMvn:
   path: cyan21/gs-multi-module
   branches:
     exclude: 'master'
-    include: 'jfrog-ode'
+    include: 'jfrog'
   files:
     exclude: '^complete\/CI\/.+'
     include: '^complete\/.+'
@@ -21,7 +21,7 @@ GitRepoContainer:
   path: cyan21/gs-multi-module
   branches:
     exclude: 'master'
-    include: 'jfrog-ode'
+    include: 'jfrog'
   files:
     include: '^complete\/CI\/Docker\/.+'
 
