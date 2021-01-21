@@ -13,7 +13,7 @@ ArtifactoryIntegration: artifactory_eu
 
 Pipeline:
   mvnNname: backapp_mvn
-  mvnContainerName: backapp_mvn_docker
+  mvnContainerName: backapp_mvn_oci
 
 ##########################################
 ## MVN Pipeline
@@ -86,7 +86,7 @@ BuildInfoContainer:
 
 BuildInfoContainerPromotion:
   resourceName: bi_backapp_mvn_oci_promoted
-  stepName: promote_bi_backapp_mvn_docker
+  stepName: promote_bi_backapp_mvn_oci
   includeDependencies: false
   status: SANDBOX_OK
   comment: passed my test succesfully
