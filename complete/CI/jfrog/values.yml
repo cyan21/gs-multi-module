@@ -71,9 +71,17 @@ GitRepoContainer:
   files:
     include: '^complete\/CI\/Docker\/.+'
 
+OCIBuild:
+  stepName: backapp_mvn_oci
+  dockerFileName: Dockerfile
+  dockerFileLocation: complete/CI/Docker/
+  imageName: ninja-docker.artifactory-eu-yannc4-0.soleng-emea-staging.jfrog.team/backapp-mvn
+  pushImage: true
+  artifactoryTargetRepoName: ninja-docker
+
 BuildInfoContainer:
-  resourceName: bi_backapp_mvn_docker
-  name: backapp_mvn_docker
+  resourceName: bi_backapp_mvn_oci
+  name: backapp_mvn_oci
   autoPublishBuildInfo: true
 
 BuildInfoContainerPromoted:
@@ -81,7 +89,7 @@ BuildInfoContainerPromoted:
 
 FileSpecMvn:
   name: fs_backapp_mvn
-  pattern:
+  appName: multi-module-application 
   flat: true
 
 PropertyBagContainer: pb_backapp_mvn_docker
