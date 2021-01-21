@@ -77,7 +77,7 @@ OCIBuild:
   dockerFileLocation: complete/CI/Docker/
   imageName: ninja-docker.artifactory-eu-yannc4-0.soleng-emea-staging.jfrog.team/backapp-mvn
   pushImage: true
-  artifactoryTargetRepoName: ninja-docker
+  artifactoryTargetRepoName: ninja-dev-docker-local
 
 BuildInfoContainer:
   resourceName: bi_backapp_mvn_oci
