@@ -1,10 +1,10 @@
 version: 1
 type: maven 
 resolver:
-  serverID: artifactory_eu
-  snapshotRepo: ninja-dev-mvn
-  releaseRepo: ninja-dev-mvn
+  serverID: ART_ID
+  snapshotRepo: VIRTUAL_REPO
+  releaseRepo: VIRTUAL_REPO
 deployer:
-  serverID: artifactory_eu
-  snapshotRepo: ninja-dev-mvn
-  releaseRepo: ninja-dev-mvn
+  serverID: ART_ID
+  snapshotRepo: VIRTUAL_REPO
+  releaseRepo: VIRTUAL_REPO

@@ -4,7 +4,7 @@
 # requires : XRAY POLICY (see policy name in watch.json)
 
 usage() {
-    echo "$0 -u <JPD_URL> -l <ADMIN_USER> -p <ADMIN_PASS> -e <EDGE_URL>"
+    echo "$0 -u <JPD_URL> -l <ADMIN_USER> -p <ADMIN_PASS> -e <EDGE_URL> -i <ART_ID> -v <VIRTUAL_REPO>"
 }
 
 JPD_URL="http://artifactory-eu-yannc3-0.soleng-emea-staging.jfrog.team"
@@ -13,12 +13,14 @@ EDGE_URL="http://edge-us-yannc4-0.soleng-emea-staging.jfrog.team"
 ADMIN_USER="admin"
 BUILD_NAMES="backapp_mvn,backapp_mvn_docker"  #list with comma as a separator
 
-while getopts "u:l:e:p:" option; do
+while getopts "u:l:e:p:i:v:" option; do
     case "${option}" in
         u) JPD_URL=${OPTARG} ;;
         l) ADMIN_USER=${OPTARG} ;;
         p) ADMIN_PASS=${OPTARG} ;;
         e) EDGE_URL=${OPTARG} ;;
+        i) ART_ID=${OPTARG} ;;
+        v) VIRTUAL_REPO=${OPTARG} ;;
         *) usage && exit 1;;
     esac
 done
@@ -52,6 +54,10 @@ curl -XPOST $creds \
     -H "Content-Type: application/json" -d @watch.json \
     $JPD_URL/xray/api/v2/watches
 
+# generate mvn config for JFrog CLI
+sed -i "s/ART_ID/$ART_ID/g" ../mvn-art-config
+sed -i "s/VIRTUAL_REPO/$VIRTUAL_REPO/g" ../mvn-art-config
 
+cat ../mvn-art-config
 
 
