@@ -2,7 +2,6 @@
 ## INPUT 
 ##########################################
 
-MvnPromoteRepo: ninja-rc-mvn-local
 MvnRepo: ninja-dev-mvn
 EdgeUrl: 'http://edge-us-yannc4-0.soleng-emea-staging.jfrog.team:80'
 
@@ -47,8 +46,14 @@ BuildInfoMvn:
   name: backapp_mvn
   autoPublishBuildInfo: true
 
-BuildInfoMvnPromoted:
+BuildInfoMvnPromotion:
   resourceName: bi_backapp_mvn_promoted_staging
+  stepName: promote_bi_backapp_mvn
+  includeDependencies: false
+  status: SANDBOX_OK
+  comment: Unit testing and Xray scan passed succesfully
+  copy: false
+  mvnPromoteRepo: ninja-rc-mvn-local
 
 PropertyBagMvn: pb_backapp_mvn
 
