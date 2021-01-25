@@ -14,7 +14,8 @@ ArtifactoryIntegration: artifactory_eu
 
 Pipeline:
   mvnNname: backapp_mvn
-  mvnContainerName: backapp_mvn_oci
+  mvnContainerName: backapp_mvn_docker
+  # mvnContainerName: backapp_mvn_oci
 
 ##########################################
 ## MVN Pipeline
@@ -95,8 +96,10 @@ BuildInfoContainer:
 #  autoPublishBuildInfo: true
 
 BuildInfoContainerPromotion:
-  resourceName: bi_backapp_mvn_oci_promoted
-  stepName: promote_bi_backapp_mvn_oci
+  # resourceName: bi_backapp_mvn_oci_promoted
+  # stepName: promote_bi_backapp_mvn_oci
+  resourceName: bi_backapp_mvn_docker_promoted
+  stepName: promote_bi_backapp_mvn_docker
   includeDependencies: false
   status: SANDBOX_OK
   comment: passed my test succesfully
@@ -108,6 +111,7 @@ FileSpecMvn:
   appName: multi-module-application 
   flat: true
 
-PropertyBagContainer: pb_backapp_mvn_oci
+PropertyBagContainer: pb_backapp_mvn_docker
+# PropertyBagContainer: pb_backapp_mvn_oci
 
 #XrayMvnContainerStepName: scan_backapp_mvn_docker
