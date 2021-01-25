@@ -4,6 +4,7 @@
 
 MvnRepo: ninja-dev-mvn
 EdgeUrl: 'http://edge-us-yannc4-0.soleng-emea-staging.jfrog.team:80'
+OCIPipeline: false
 
 ##########################################
 ## GLOBAL 
