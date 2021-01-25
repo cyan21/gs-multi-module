@@ -57,10 +57,15 @@ BuildInfoMvnPromotion:
   copy: false
   mvnPromoteRepo: ninja-rc-mvn-local
 
+FileSpecMvn:
+  name: fs_backapp_mvn
+  appName: multi-module-application 
+  flat: true
+
 PropertyBagMvn: pb_backapp_mvn
 
 ##########################################
-## DOCKER PIPELINE
+## CONTAINER PIPELINE
 ##########################################
 
 GitRepoContainer:
@@ -73,6 +78,36 @@ GitRepoContainer:
   files:
     include: '^complete\/CI\/Docker\/.+'
 
+PropertyBagContainer: pb_backapp_mvn_container
+
+
+## DOCKER PIPELINE
+
+DockerBuild:
+  stepName: backapp_mvn_docker
+  dockerFileName: Dockerfile
+  dockerFileLocation: complete/CI/Docker/
+  imageName: ninja-docker.artifactory-eu-yannc4-0.soleng-emea-staging.jfrog.team/backapp-mvn-docker
+  artifactoryTargetRepoName: ninja-dev-docker-local
+
+BuildInfoContainer:
+  resourceName: bi_backapp_mvn_docker
+  name: backapp_mvn_docker
+#  autoPublishBuildInfo: true
+
+BuildInfoContainerPromotion:
+  resourceName: bi_backapp_mvn_docker_promoted
+  stepName: promote_bi_backapp_mvn_docker
+  includeDependencies: false
+  status: SCAN_OK
+  comment: Xray scan OK 
+  copy: false
+  mvnPromoteRepo: ninja-rc-docker-local
+
+XrayMvnContainerStepName: scan_backapp_mvn_docker
+
+## OCI PIPELINE
+
 # OCIBuild:
 #   stepName: backapp_mvn_oci
 #   dockerFileName: Dockerfile
@@ -81,37 +116,18 @@ GitRepoContainer:
 #   pushImage: true
 #   artifactoryTargetRepoName: ninja-dev-docker-local
 
-DockerBuild:
-  stepName: backapp_mvn_docker
-  dockerFileName: Dockerfile
-  dockerFileLocation: complete/CI/Docker/
-  imageName: ninja-docker.artifactory-eu-yannc4-0.soleng-emea-staging.jfrog.team/backapp-mvn
-  artifactoryTargetRepoName: ninja-dev-docker-local
+# BuildInfoContainer:
+#   resourceName: bi_backapp_mvn_oci
+#   name: backapp_mvn_oci
+#   autoPublishBuildInfo: true
 
-BuildInfoContainer:
-  # resourceName: bi_backapp_mvn_oci
-  # name: backapp_mvn_oci
-  resourceName: bi_backapp_mvn_docker
-  name: backapp_mvn_docker
-#  autoPublishBuildInfo: true
+# BuildInfoContainerPromotion:
+#   resourceName: bi_backapp_mvn_oci_promoted
+#   stepName: promote_bi_backapp_mvn_oci
+#   includeDependencies: false
+#   status: SANDBOX_OK
+#   comment: passed my test succesfully
+#   copy: false
+#   mvnPromoteRepo: ninja-rc-docker-local
 
-BuildInfoContainerPromotion:
-  # resourceName: bi_backapp_mvn_oci_promoted
-  # stepName: promote_bi_backapp_mvn_oci
-  resourceName: bi_backapp_mvn_docker_promoted
-  stepName: promote_bi_backapp_mvn_docker
-  includeDependencies: false
-  status: SANDBOX_OK
-  comment: passed my test succesfully
-  copy: false
-  mvnPromoteRepo: ninja-rc-docker-local
 
-FileSpecMvn:
-  name: fs_backapp_mvn
-  appName: multi-module-application 
-  flat: true
-
-PropertyBagContainer: pb_backapp_mvn_docker
-# PropertyBagContainer: pb_backapp_mvn_oci
-
-#XrayMvnContainerStepName: scan_backapp_mvn_docker
