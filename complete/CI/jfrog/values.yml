@@ -88,7 +88,7 @@ DockerBuild:
   stepName: backapp_mvn_docker
   dockerFileName: Dockerfile
   dockerFileLocation: complete/CI/Docker/
-  registry: ninja-docker.artifactory-eu-yannc4-0.soleng-emea-staging.jfrog.team:80/
+  registry: ninja-docker.artifactory-eu-yannc4-0.soleng-emea-staging.jfrog.team:80
   imageName: backapp-mvn-docker
   artifactoryTargetRepoName: ninja-dev-docker-local
 
