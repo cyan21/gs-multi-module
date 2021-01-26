@@ -83,11 +83,13 @@ PropertyBagContainer: pb_backapp_mvn_container
 
 ## DOCKER PIPELINE
 
+
 DockerBuild:
   stepName: backapp_mvn_docker
   dockerFileName: Dockerfile
   dockerFileLocation: complete/CI/Docker/
-  imageName: ninja-docker.artifactory-eu-yannc4-0.soleng-emea-staging.jfrog.team/backapp-mvn-docker
+  registry: ninja-docker.artifactory-eu-yannc4-0.soleng-emea-staging.jfrog.team:80/
+  imageName: backapp-mvn-docker
   artifactoryTargetRepoName: ninja-dev-docker-local
 
 BuildInfoContainer:
@@ -112,7 +114,8 @@ XrayMvnContainerStepName: scan_backapp_mvn_docker
 #   stepName: backapp_mvn_oci
 #   dockerFileName: Dockerfile
 #   dockerFileLocation: complete/CI/Docker/
-#   imageName: ninja-docker.artifactory-eu-yannc4-0.soleng-emea-staging.jfrog.team/backapp-mvn
+#   registry: ninja-docker.artifactory-eu-yannc4-0.soleng-emea-staging.jfrog.team:80/
+#   imageName: backapp-mvn
 #   pushImage: true
 #   artifactoryTargetRepoName: ninja-dev-docker-local
 
