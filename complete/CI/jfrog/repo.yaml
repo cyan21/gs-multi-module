@@ -74,12 +74,13 @@ virtualRepositories:
       - ninja-uat-mvn-local
       - ninja-prod-mvn-local
     defaultDeploymentRepo: ninja-rc-mvn-local
-  ninja-dev-docker:
+  ninja-docker:
     type: docker
     dockerApiVersion: V2
     repoLayout: simple-default 
     repositories:   
       - ninja-dev-docker-local
+      - ninja-rc-docker-local
       - ninja-dockerhub-remote
     defaultDeploymentRepo: ninja-dev-docker-local
   ninja-dev-grdl:
