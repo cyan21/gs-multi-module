@@ -3,7 +3,7 @@
 ##########################################
 
 MvnRepo: ninja-dev-mvn
-EdgeUrl: 'http://edge-us-yannc4-0.soleng-emea-staging.jfrog.team:80'
+EdgeUrl: 'http://edge-us-yannc3-0.soleng-emea-staging.jfrog.team:80'
 OCIPipeline: false
 
 ##########################################
@@ -88,7 +88,7 @@ DockerBuild:
   stepName: backapp_mvn_docker
   dockerFileName: Dockerfile
   dockerFileLocation: complete/CI/Docker/
-  registry: ninja-docker.artifactory-eu-yannc4-0.soleng-emea-staging.jfrog.team:80
+  registry: ninja-docker.artifactory-eu-yannc3-0.soleng-emea-staging.jfrog.team:80
   imageName: backapp-mvn-docker
   artifactoryTargetRepoName: ninja-dev-docker-local
 
@@ -114,7 +114,7 @@ XrayMvnContainerStepName: scan_backapp_mvn_docker
 #   stepName: backapp_mvn_oci
 #   dockerFileName: Dockerfile
 #   dockerFileLocation: complete/CI/Docker/
-#   registry: ninja-docker.artifactory-eu-yannc4-0.soleng-emea-staging.jfrog.team:80/
+#   registry: ninja-docker.artifactory-eu-yannc3-0.soleng-emea-staging.jfrog.team:80/
 #   imageName: backapp-mvn
 #   pushImage: true
 #   artifactoryTargetRepoName: ninja-dev-docker-local
