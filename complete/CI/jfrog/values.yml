@@ -27,7 +27,7 @@ GitRepoMvn:
   path: cyan21/gs-multi-module
   branches:
     exclude: 'master'
-    include: 'jfrog'
+    include: 'demo'
   files:
     exclude: '^complete\/CI\/.+'
     include: '^complete\/.+'
