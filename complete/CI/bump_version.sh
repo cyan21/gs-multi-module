@@ -1,8 +1,8 @@
 #/!bin/bash
 
-cur_vers=1.1.0
-new_vers=1.3.0
-new_msg="it's a raining day ..."
+cur_vers=1.3.0
+new_vers=1.4.0
+new_msg="it's a raining man ..."
 
 # '' is for mac OS ...
 sed -i '' "s/<version>${cur_vers}<\/version>/<version>${new_vers}<\/version>/" "../application/pom.xml"
