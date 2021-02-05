@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.example</groupId>
 	<artifactId>multi-module-application</artifactId>
-	<version>1.4.0</version>
+	<version>1.4.1</version>
 	<name>multi-module-application</name>
 	<description>Demo project for Spring Boot</description>
 
@@ -30,7 +30,7 @@
 		<dependency>
 			<groupId>com.example</groupId>
 			<artifactId>multi-module-library</artifactId>
-			<version>1.4.0</version>
+			<version>1.4.1</version>
 		</dependency>
 
 		<dependency>
