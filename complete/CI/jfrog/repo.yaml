@@ -55,7 +55,7 @@ virtualRepositories:
       - ninja-mvn-dev-local
       - ninja-mvn-rc-local
       - ninja-prod-mvn-local
-    defaultDeploymentRepo: ninja-rc-dev-local
+    defaultDeploymentRepo: ninja-mvn-dev-local
   ninja-docker:
     type: docker
     dockerApiVersion: V2
@@ -64,7 +64,7 @@ virtualRepositories:
       - ninja-docker-dev-local
       - ninja-docker-rc-local
       - ninja-dockerhub-remote
-    defaultDeploymentRepo: ninja-dev-docker-local
+    defaultDeploymentRepo: ninja-docker-dev-local
   ninja-debian-release:
     type: debian
     repoLayout: simple-default 
