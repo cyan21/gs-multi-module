@@ -1,37 +1,32 @@
 localRepositories:   
-  ninja-dev-mvn-local:
+  ninja-mvn-dev-local:
     type: maven
     repoLayout: maven-2-default 
     xray:   
       enabled: true
-  ninja-rc-mvn-local:
+  ninja-mvn-rc-local:
     type: maven
     repoLayout: maven-2-default 
     xray:   
       enabled: true
-  ninja-dev-grdl-local:
-    type: gradle
+  ninja-mvn-prod-local:
+    type: maven
     repoLayout: maven-2-default 
     xray:   
       enabled: true
-  ninja-rc-grdl-local:
-    type: gradle
-    repoLayout: maven-2-default 
-    xray:   
-      enabled: true
-  ninja-dev-docker-local:
+  ninja-docker-dev-local:
     type: docker
     dockerApiVersion: V2
     repoLayout: simple-default 
     xray:   
       enabled: true
-  ninja-rc-docker-local:
+  ninja-docker-rc-local:
     type: docker
     dockerApiVersion: V2
     repoLayout: simple-default 
     xray:   
       enabled: true
-  ninja-release-debian-local:
+  ninja-debian-release-local:
     type: debian
     repoLayout: simple-default 
     xray:   
@@ -39,12 +34,6 @@ localRepositories:
 remoteRepositories: 
   ninja-jcenter-remote:
     type: maven
-    repoLayout: maven-2-default 
-    url: https://jcenter.bintray.com 
-    xray:   
-      enabled: true
-  ninja-jcenter-grdl-remote:
-    type: gradle 
     repoLayout: maven-2-default 
     url: https://jcenter.bintray.com 
     xray:   
@@ -58,41 +47,27 @@ remoteRepositories:
     xray:   
       enabled: true
 virtualRepositories: 
-  ninja-dev-mvn:
-    type: maven
-    repoLayout: maven-2-default 
-    repositories:   
-      - ninja-dev-mvn-local
-      - ninja-jcenter-remote
-    defaultDeploymentRepo: ninja-dev-mvn-local
   ninja-mvn:
     type: maven
     repoLayout: maven-2-default
     repositories:
       - ninja-jcenter-remote
-      - ninja-rc-mvn-local
-      - ninja-uat-mvn-local
+      - ninja-mvn-dev-local
+      - ninja-mvn-rc-local
       - ninja-prod-mvn-local
-    defaultDeploymentRepo: ninja-rc-mvn-local
+    defaultDeploymentRepo: ninja-rc-dev-local
   ninja-docker:
     type: docker
     dockerApiVersion: V2
     repoLayout: simple-default 
     repositories:   
-      - ninja-dev-docker-local
-      - ninja-rc-docker-local
+      - ninja-docker-dev-local
+      - ninja-docker-rc-local
       - ninja-dockerhub-remote
     defaultDeploymentRepo: ninja-dev-docker-local
-  ninja-dev-grdl:
-    type: gradle
-    repoLayout: maven-2-default 
-    repositories:   
-      - ninja-dev-grdl-local
-      - ninja-jcenter-gradle-remote
-    defaultDeploymentRepo: ninja-dev-grdl-local
-  ninja-release-debian:
+  ninja-debian-release:
     type: debian
     repoLayout: simple-default 
     repositories:   
-      - ninja-release-debian-local
-    defaultDeploymentRepo: ninja-release-debian-local
+      - ninja-debian-release-local
+    defaultDeploymentRepo: ninja-debian-release-local
