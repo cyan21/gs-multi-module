@@ -90,7 +90,7 @@ DockerBuild:
   dockerFileLocation: complete/CI/Docker/
   registry: ninja-docker.artifactory-eu-yannc3-0.soleng-emea-staging.jfrog.team:80
   imageName: backapp-mvn-docker
-  artifactoryTargetRepoName: ninja-dev-docker-local
+  artifactoryTargetRepoName: ninja-docker-dev-local
 
 BuildInfoContainer:
   resourceName: bi_backapp_mvn_docker
@@ -104,7 +104,7 @@ BuildInfoContainerPromotion:
   status: SCAN_OK
   comment: Xray scan OK 
   copy: false
-  mvnPromoteRepo: ninja-rc-docker-local
+  mvnPromoteRepo: ninja-docker-rc-local
 
 XrayMvnContainerStepName: scan_backapp_mvn_docker
 
@@ -117,7 +117,7 @@ XrayMvnContainerStepName: scan_backapp_mvn_docker
 #   registry: ninja-docker.artifactory-eu-yannc3-0.soleng-emea-staging.jfrog.team:80/
 #   imageName: backapp-mvn
 #   pushImage: true
-#   artifactoryTargetRepoName: ninja-dev-docker-local
+#   artifactoryTargetRepoName: ninja-docker-dev-local
 
 # BuildInfoContainer:
 #   resourceName: bi_backapp_mvn_oci
@@ -131,6 +131,6 @@ XrayMvnContainerStepName: scan_backapp_mvn_docker
 #   status: SANDBOX_OK
 #   comment: passed my test succesfully
 #   copy: false
-#   mvnPromoteRepo: ninja-rc-docker-local
+#   mvnPromoteRepo: ninja-docker-rc-local
 
 

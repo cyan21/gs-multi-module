@@ -7,9 +7,9 @@ usage() {
     echo "$0 -u <JPD_URL> -l <ADMIN_USER> -p <ADMIN_PASS> -e <EDGE_URL> -i <ART_ID> -v <VIRTUAL_REPO>"
 }
 
-JPD_URL="http://artifactory-eu-yannc4-0.soleng-emea-staging.jfrog.team"
-EDGE1_URL="http://edge-us-yannc4-0.soleng-emea-staging.jfrog.team"
-EDGE2_URL="http://edge-apac-yannc4-0.soleng-emea-staging.jfrog.team"
+JPD_URL="http://artifactory-eu-yannc3-0.soleng-emea-staging.jfrog.team"
+EDGE1_URL="http://edge-us-yannc3-0.soleng-emea-staging.jfrog.team"
+EDGE2_URL="http://edge-apac-yannc3-0.soleng-emea-staging.jfrog.team"
 
 ADMIN_USER="admin"
 BUILD_NAMES="backapp_mvn,backapp_mvn_docker"  #list with comma as a separator
