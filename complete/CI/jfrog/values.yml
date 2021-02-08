@@ -2,7 +2,7 @@
 ## INPUT 
 ##########################################
 
-MvnRepo: ninja-dev-mvn
+MvnRepo: ninja-mvn
 EdgeUrl: 'http://edge-us-yannc3-0.soleng-emea-staging.jfrog.team:80'
 OCIPipeline: false
 
