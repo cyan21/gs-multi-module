@@ -55,7 +55,7 @@ BuildInfoMvnPromotion:
   status: SANDBOX_OK
   comment: Unit testing and Xray scan passed succesfully
   copy: false
-  mvnPromoteRepo: ninja-rc-mvn-local
+  mvnPromoteRepo: ninja-mvn-rc-local
 
 FileSpecMvn:
   name: fs_backapp_mvn
