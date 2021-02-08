@@ -8,7 +8,7 @@
         "resources": [
             {
                 "type": "repository",
-                "name": "ninja-dev-mvn-local",
+                "name": "ninja-mvn-dev-local",
                 "bin_mgr_id": "unused",
                 "filters": [
                     {
@@ -19,7 +19,7 @@
             },
             {
                 "type": "repository",
-                "name": "ninja-rc-mvn-local",
+                "name": "ninja-mvn-rc-local",
                 "bin_mgr_id": "unused",
                 "filters": [
                     {
@@ -30,7 +30,7 @@
             },
             {
                 "type": "repository",
-                "name": "ninja-dev-docker-local",
+                "name": "ninja-docker-dev-local",
                 "bin_mgr_id": "unused",
                 "filters": [
                     {
@@ -41,7 +41,7 @@
             },
             {
                 "type": "repository",
-                "name": "ninja-rc-docker-local",
+                "name": "ninja-docker-rc-local",
                 "bin_mgr_id": "unused",
                 "filters": [
                     {
