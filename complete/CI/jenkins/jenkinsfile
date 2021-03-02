@@ -1,0 +1,113 @@
+pipeline {
+    agent any
+    
+    environment {
+        ARTY_CREDS=credentials('jenkins')
+        ADM_CREDS=credentials('admin_art')
+        ART_ID="artifactory-eu"
+    }
+
+    parameters {
+        string(name: 'JPD_URL', defaultValue: 'http://artifactory-eu-yannc4-0.soleng-emea-staging.jfrog.team', description: '')
+        string(name: 'PROMOTE_REPO', defaultValue: 'ninja-mvn-rc-local', description: '')
+        booleanParam(name: 'FAIL_BUILD', defaultValue: false, description: 'Xray scan')
+    }
+    
+    stages {
+        stage ('Clone') {
+            steps {
+                git branch: 'demo2', url: "https://github.com/cyan21/gs-multi-module.git"
+            
+                sh "ls -l && mv complete/pom.xml.test complete/pom.xml && cat complete/pom.xml"
+                sh "mv complete/application/pom.xml.test complete/application/pom.xml && cat complete/application/pom.xml"
+                sh "mv complete/library/pom.xml.test complete/library/pom.xml && cat complete/library/pom.xml"
+
+                sh '''
+                   echo "{\\"names\\":[\\"${JOB_NAME}\\"]}" > payload.json && cat payload.json
+                '''   
+            
+                sh "curl -XPOST -u${ADM_CREDS_USR}:${ADM_CREDS_PSW}  -H \"Content-Type: application/json\" -d @payload.json ${JPD_URL}/xray/api/v1/binMgr/builds"
+
+            }
+        }
+  
+        stage ('Artifactory configuration') {
+            steps {
+                rtServer (
+                    id: env.ART_ID,
+                    url: "${params.JPD_URL}/artifactory",
+                    credentialsId: 'jenkins'
+                )
+
+                rtMavenDeployer (
+                    id: "MAVEN_DEPLOYER",
+                    serverId: env.ART_ID,
+                    releaseRepo: "ninja-mvn",
+                    snapshotRepo: "ninja-mvn"
+                )
+
+                rtMavenResolver (
+                    id: "MAVEN_RESOLVER",
+                    serverId: env.ART_ID,
+                    releaseRepo: "ninja-mvn",
+                    snapshotRepo: "ninja-mvn"
+                )
+                
+                rtBuildInfo (
+                    captureEnv: true,
+                    excludeEnvPatterns: ['*private*', 'internal-*', 'ADM*'],
+ 
+                    // buildName: 'my-build',
+                    // buildNumber: '20'
+                )
+            }
+        }
+
+        stage ('Exec Maven') {
+            steps {
+                rtMavenRun (
+                    tool:'mvn', // Tool name from Jenkins configuration
+                    pom: 'complete/pom.xml',
+                    goals: 'clean package',
+                    deployerId: "MAVEN_DEPLOYER",
+                    resolverId: "MAVEN_RESOLVER"
+                )
+            }
+        }
+
+        stage ('Publish build info') {
+            steps {
+                rtPublishBuildInfo (
+                    serverId: env.ART_ID
+                )
+            }
+        }
+        
+        stage ('Xray scan') {
+            steps {
+                xrayScan (
+                    serverId: env.ART_ID,
+                    failBuild: params.FAIL_BUILD
+                )
+            }
+        }
+      
+        stage ('Promotion') {
+            steps {
+                rtPromote (
+                    //Mandatory parameter
+                    serverId: env.ART_ID,
+                    targetRepo: params.PROMOTE_REPO,
+
+                    //Optional parameters
+                    comment: 'passed Xray scan',
+                    status: 'XRAY_OK',
+                    includeDependencies: false,
+                    failFast: true,
+                    copy: false
+                )
+            }
+        }
+
+    }
+}
