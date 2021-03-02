@@ -28,7 +28,7 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.example</groupId>
+			<groupId>org.ych</groupId>
 			<artifactId>multi-module-library</artifactId>
 			<version>1.4.1</version>
 		</dependency>
