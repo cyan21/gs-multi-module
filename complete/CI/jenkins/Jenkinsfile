@@ -38,6 +38,7 @@ pipeline {
 //        ADM_CREDS=credentials('admin_art')
         ART_ID="artifactory-eu"
         JAVA_HOME = '/usr/lib/jvm/java-1.8-openjdk/'
+        MAVEN_HOME = '/usr/share/maven'
     }
 
     parameters {
@@ -109,7 +110,6 @@ pipeline {
                     sh "which java"
                     sh "ls -l /usr/bin/java"
                     rtMavenRun (
-                        tool:'mvn', // Tool name from Jenkins configuration
                         pom: 'complete/pom.xml',
                         goals: 'clean package',
                         deployerId: "MAVEN_DEPLOYER",
