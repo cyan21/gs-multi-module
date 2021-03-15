@@ -49,7 +49,7 @@ pipeline {
     
     stages {
 
-        stage ('Clone') {
+        stage ('Get Source code') {
             steps {
                 git branch: 'demo2', url: "https://github.com/cyan21/gs-multi-module.git"
             
@@ -60,9 +60,6 @@ pipeline {
                 sh '''
                    echo "{\\"names\\":[\\"${JOB_NAME}\\"]}" > payload.json && cat payload.json
                 '''   
-            
-//                sh "curl -XPOST -u${ADM_CREDS_USR}:${ADM_CREDS_PSW}  -H \"Content-Type: application/json\" -d @payload.json ${JPD_URL}/xray/api/v1/binMgr/builds"
-
             }
         }
   
@@ -97,18 +94,16 @@ pipeline {
                         // buildName: 'my-build',
                         // buildNumber: '20'
                     )
+                                        
+                    // Xray : reference  build info
+                    // sh "curl -XPOST -u${ADM_CREDS_USR}:${ADM_CREDS_PSW}  -H \"Content-Type: application/json\" -d @payload.json ${JPD_URL}/xray/api/v1/binMgr/builds"
                 }
             }
         }
 
-        stage ('Exec Maven') {
+        stage ('Build Maven project') {
             steps {
-                
                 container('maven') {
-                    sh "mvn --version"
-                    sh "java -version "
-                    sh "which java"
-                    sh "ls -l /usr/bin/java"
                     rtMavenRun (
                         pom: 'complete/pom.xml',
                         goals: 'clean package',
@@ -127,7 +122,6 @@ pipeline {
             }
         }
 
-/*        
         stage ('Xray scan') {
             steps {
                 xrayScan (
@@ -153,6 +147,5 @@ pipeline {
                 )
             }
         }
-*/
     }
 }
