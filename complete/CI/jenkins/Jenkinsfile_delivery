@@ -1,0 +1,100 @@
+pipeline {
+    agent {
+        kubernetes {
+            yaml """\
+            apiVersion: v1
+            kind: Pod
+            metadata:
+              labels:
+                some-label: some-label-value
+            spec:
+              containers:
+              - name: jfrog-cli
+                image: releases-docker.jfrog.io/jfrog/jfrog-cli:latest 
+                command:
+                - cat
+                tty: true
+              - name: busybox
+                image: busybox
+                command:
+                - cat
+                tty: true
+            """.stripIndent()
+        }
+    }
+
+    environment {
+        ARTY_CREDS=credentials('jenkins_rt')
+        ART_ID="artifactory-eu"
+    }
+
+    parameters {
+        string(name: 'JPD_URL', defaultValue: 'http://artifactory-eu-yannc4-0.soleng-emea-staging.jfrog.team', description: '')
+        string(name: 'PROJECT', defaultValue: 'adm', description: '')
+        string(name: 'TECH', defaultValue: 'mvn', description: '')
+
+        string(name: 'BUILD_NAME', defaultValue: 'jenkins-maven', description: '')
+        string(name: 'BUILD_NUMBER', defaultValue: '1', description: '')
+        booleanParam(name: 'FAIL_BUILD', defaultValue: false, description: 'Xray scan')
+        booleanParam(name: 'DRY_RUN', defaultValue: false, description: 'Xray scan')
+
+    }
+    
+    stages {
+
+        stage ('Ready for SIT') {
+            steps {
+                container('jfrog-cli') {
+                    sh '''
+                        jfrog config add --interactive=false --artifactory-url=${JPD_URL}/artifactory --user=${ARTY_CREDS_USR} --password=${ARTY_CREDS_PSW} art
+                        jfrog rt bpr --status="SIT_READY" --comment="Ready for deployment" --include-dependencies=false --dry-run=$DRY_RUN $BUILD_NAME $BUILD_NUMBER ${PROJECT}-${TECH}-sit-local
+                    '''
+                }
+            }
+        }
+
+        stage ('Deploy to SIT and test') {
+            steps {
+                sh '''
+                    echo "Deploy and test"
+                '''
+            }
+        }
+
+        stage ('Promotion to UAT') {
+            steps {
+                container('jfrog-cli') {
+                    sh '''
+                        jfrog rt bpr --status="SIT_OK" --comment="Passed SIT test" --include-dependencies=false --dry-run=$DRY_RUN $BUILD_NAME $BUILD_NUMBER ${PROJECT}-${TECH}-uat-local
+                    '''
+                }
+            }
+        }
+        
+        stage ('Deploy to UAT and test') {
+            steps {
+                sh '''
+                    echo "Deploy and test"
+                '''
+            }
+        }
+
+        stage ('Promotion to  PROD') {
+            steps {
+                container('jfrog-cli') {
+                    sh '''
+                        jfrog rt bpr --status="UAT_OK" --comment="Passed UAT test" --include-dependencies=true --dry-run=$DRY_RUN $BUILD_NAME $BUILD_NUMBER ${PROJECT}-${TECH}-prod-local
+                    '''
+                }
+            }
+        }
+        
+        stage ('Deploy to PROD') {
+            steps {
+                sh '''
+                    echo "Deploy and test"
+                '''
+            }
+        }
+    }
+}
