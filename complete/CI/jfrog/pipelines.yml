@@ -99,7 +99,7 @@ pipelines:
             - git checkout {{ .Values.GitRepoMvn.branches.include }}
             - git branch
             - ls -l && chmod +x init_mvn.sh
-            - ./init_mvn.sh -u  ${int_{{ .Values.ArtifactoryIntegration }}_url/%artifactory/} -l ${int_{{ .Values.ArtifactoryIntegration }}_user} -p ${int_{{ .Values.ArtifactoryIntegration }}_apikey}  -i {{ .Values.ArtifactoryIntegration }} -v {{ .Values.MvnRepo }}
+            - ./init_mvn.sh -u  ${int_{{ .Values.ArtifactoryIntegration }}_url%/artifactory} -l ${int_{{ .Values.ArtifactoryIntegration }}_user} -p ${int_{{ .Values.ArtifactoryIntegration }}_apikey}  -i {{ .Values.ArtifactoryIntegration }} -v {{ .Values.MvnRepo }}
           onSuccess:
             - add_run_variables runVarAppVersion=`sed -n "s/[[:space:]]*<version>\(.*\)<\/version>/\1/p" ${res_{{ .Values.GitRepoMvn.name }}_resourcePath}/complete/pom.xml `
             - add_run_variables runVarGitCommit=${res_{{ .Values.GitRepoMvn.name }}_commitSha}
