@@ -1,0 +1,232 @@
+template: true
+valuesFilePath: values.yml 
+
+resources:
+
+  - name: {{ .Values.GitRepoMvn.name | default "src_code_backapp_mvn" }}
+    type: GitRepo
+    configuration:
+      gitProvider: {{ .Values.GitRepoMvn.gitProvider }}
+      path: {{ .Values.GitRepoMvn.path }}
+      branches:
+        include: {{ .Values.GitRepoMvn.branches.include }}
+      files:
+        include: {{ .Values.GitRepoMvn.files.include }}
+        exclude: {{ .Values.GitRepoMvn.files.exclude }}
+
+  - name: {{ .Values.BuildInfoMvn.resourceName | default "bi_backapp_mvn" }}
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: {{ .Values.ArtifactoryIntegration }}
+      buildName: {{ .Values.BuildInfoMvn.name | default "BuildInfoMvn" }}
+      buildNumber: ${run_number}
+
+  - name: {{ .Values.BuildInfoMvnPromotion.resourceName | default "bi_backapp_mvn_promoted_staging" }} 
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: {{ .Values.ArtifactoryIntegration }}
+      buildName: {{ .Values.BuildInfoMvn.name | default "BuildInfoMvn" }}
+      buildNumber: ${run_number}
+
+  - name: {{ .Values.PropertyBagMvn | default "pb_backapp_mvn" }}  
+    type: PropertyBag
+    configuration:
+      appVersion: X.X.X
+
+  - name: {{ .Values.GitRepoContainer.name | default "src_dockerfile_backapp_mvn" }}
+    type: GitRepo
+    configuration:
+      gitProvider: {{ .Values.GitRepoContainer.gitProvider }}
+      path: {{ .Values.GitRepoContainer.path }}
+      branches:
+        include: {{ .Values.GitRepoContainer.branches.include }}
+      files:
+        include: {{ .Values.GitRepoContainer.files.include }}      
+
+  - name: {{ .Values.BuildInfoContainer.resourceName | default "bi_backapp_mvn_oci" }}
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: {{ .Values.ArtifactoryIntegration }}
+      buildName: {{ .Values.BuildInfoContainer.name | default "backapp_mvn_oci" }}
+#      buildNumber: ${runVarBINumber}
+      buildNumber: "${run_number}"
+
+  - name: {{ .Values.BuildInfoContainerPromotion.resourceName | default "bi_backapp_mvn_oci_promoted_staging" }}
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: {{ .Values.ArtifactoryIntegration }}
+      buildName: {{ .Values.BuildInfoContainer.name | default "backapp_mvn_oci" }}
+#      buildNumber: ${runVarBINumber}
+      buildNumber: "${run_number}"
+
+  - name: {{ .Values.FileSpecMvn.name | default "fs_backapp_mvn" }} 
+    type: FileSpec
+    configuration:
+      sourceArtifactory: {{ .Values.ArtifactoryIntegration }}
+      pattern: "{{ .Values.MvnPromoteRepo }}/**/{{ .Values.FileSpecMvn.appName }}-${runVarAppVersion}.jar"
+#      pattern: "{{ .Values.MvnPromoteRepo }}/**/{{ .Values.FileSpecMvn.appName }}-${res_{{ .Values.PropertyBagContainer }}_appVersion}.jar"
+      flat: {{ .Values.FileSpecMvn.flat | default true }}
+
+  - name: {{ .Values.PropertyBagContainer | default "pb_backapp_mvn_oci" }}  
+    type: PropertyBag
+    configuration:   
+      appVersion: X.X.X
+
+
+pipelines:
+  - name: {{ .Values.Pipeline.mvnNname }} 
+    steps:
+      - name: {{ .Values.MvnBuild.stepName }} 
+        type: MvnBuild
+        configuration: 
+          mvnCommand:           {{ .Values.MvnBuild.goals }} 
+          sourceLocation:       {{ .Values.MvnBuild.sourceLocation }} 
+          configFileLocation:   {{ .Values.MvnBuild.configFileLocation }} 
+          configFileName:       {{ .Values.MvnBuild.configFileName }} 
+          forceXrayScan:        {{ .Values.MvnBuild.forceXrayScan }} 
+          autoPublishBuildInfo: {{ .Values.MvnBuild.autoPublishBuildInfo }} 
+          inputResources:
+            - name: {{ .Values.GitRepoMvn.name }} 
+          outputResources:
+            - name: {{ .Values.BuildInfoMvn.resourceName }}
+          integrations:
+            - name: {{ .Values.ArtifactoryIntegration }}
+        execution:
+          onStart:
+            - export JFROG_CLI_BUILD_URL="${int_{{ .Values.ArtifactoryIntegration }}_url/%artifactory/ui}/pipelines/myPipelines/${pipeline_name}/${run_number}/build_${pipeline_name}?branch=${res_{{ .Values.GitRepoMvn.name }}_branchName}"
+            - cd ${res_{{ .Values.GitRepoMvn.name }}_resourcePath}/complete/CI/jfrog
+            - echo {{ .Values.GitRepoMvn.branches.include }}
+            - git checkout {{ .Values.GitRepoMvn.branches.include }}
+            - git branch
+            - ls -l && chmod +x init_mvn.sh
+            - ./init_mvn.sh -u  ${int_{{ .Values.ArtifactoryIntegration }}_url/%artifactory/} -p ${int_{{ .Values.ArtifactoryIntegration }}_apikey}  -i {{ .Values.ArtifactoryIntegration }} -v {{ .Values.MvnRepo }}
+          onSuccess:
+            - add_run_variables runVarAppVersion=`sed -n "s/[[:space:]]*<version>\(.*\)<\/version>/\1/p" ${res_{{ .Values.GitRepoMvn.name }}_resourcePath}/complete/pom.xml `
+            - add_run_variables runVarGitCommit=${res_{{ .Values.GitRepoMvn.name }}_commitSha}
+            - echo $runVarAppVersion
+            - echo $runVarGitCommit
+            - jfrog rt sp --build=${res_{{ .Values.BuildInfoMvn.resourceName }}_buildName}/${run_number} --exclusions="*.pom;*library*" {{ .Values.MvnRepo }}/ "src.commit.sha=${runVarGitCommit};app.version=${runVarAppVersion};app.name=ninja"
+                
+      - name: {{ .Values.XrayMvnStepName }}
+        type: XrayScan
+        configuration:
+          failOnScan: false
+          inputResources:
+            - name: {{ .Values.BuildInfoMvn.resourceName }}
+              trigger: true
+            
+      - name: {{ .Values.BuildInfoMvnPromotion.resourceName }}
+        type: PromoteBuild
+        configuration:
+          targetRepository: {{ .Values.BuildInfoMvnPromotion.mvnPromoteRepo }} 
+          includeDependencies: {{ .Values.BuildInfoMvnPromotion.includeDependencies }}
+          status: {{ .Values.BuildInfoMvnPromotion.status }}
+          comment: {{ .Values.BuildInfoMvnPromotion.comment }}
+          copy: {{ .Values.BuildInfoMvnPromotion.copy }}
+          inputResources:
+            - name: {{ .Values.BuildInfoMvn.resourceName }}
+              trigger: true
+          inputSteps:
+            - name: {{ .Values.XrayMvnStepName }}
+          outputResources:
+            - name: {{ .Values.PropertyBagMvn }}            
+            - name: {{ .Values.BuildInfoMvnPromotion.resourceName }}
+        execution:  
+          onStart:
+            - echo ${res_{{ .Values.BuildInfoMvn.resourceName }}_buildName} 
+            - echo ${res_{{ .Values.BuildInfoMvn.resourceName }}_buildNumber} 
+          onSuccess:
+            - write_output {{ .Values.PropertyBagMvn }} appVersion=${runVarAppVersion}
+            - write_output {{ .Values.PropertyBagMvn }} appCommitSHA=${runVarGitCommit}
+            - write_output {{ .Values.PropertyBagMvn }} biNumber=${res_{{ .Values.BuildInfoMvn.resourceName }}_buildNumber}
+
+  - name: {{ .Values.Pipeline.mvnContainerName }} 
+    steps:
+    # need this step to export the appVersion for the Filespec Resource
+      - name: setup_env
+        type: Bash
+        configuration:
+          affinityGroup: together
+          runtime:
+            type: host
+          inputResources:
+            - name: {{ .Values.PropertyBagMvn }}
+        execution:
+          onExecute:
+            - add_run_variables runVarAppVersion=${res_{{ .Values.PropertyBagMvn }}_appVersion}
+            - add_run_variables runVarAppCommitSHA=${res_{{ .Values.PropertyBagMvn }}_appCommitSHA}
+            - add_run_variables runVarBINumber=${res_{{ .Values.PropertyBagMvn }}_biNumber}
+     
+      - name: {{ .Values.DockerBuild.stepName | default "build_backapp_mvn_docker" }} 
+        type: DockerBuild
+        configuration:
+          affinityGroup: together
+          dockerFileName: {{ .Values.DockerBuild.dockerFileName }}
+          dockerFileLocation: {{ .Values.DockerBuild.dockerFileLocation }}
+          dockerImageName: "{{ .Values.DockerBuild.registry }}/{{ .Values.DockerBuild.imageName }}"
+          dockerImageTag: ${runVarAppVersion}
+          dockerOptions: --build-arg JFROG_CLI_BUILD_URL=${int_{{ .Values.ArtifactoryIntegration }}_url/%artifactory/ui}/pipelines/myPipelines/${pipeline_name}/${run_number}/build_${pipeline_name}?branch=${res_{{ .Values.GitRepoContainer.name }}_branchName
+          inputSteps:
+            - name: setup_env
+          inputResources:
+            - name: {{ .Values.PropertyBagMvn }}
+            - name: {{ .Values.GitRepoContainer.name }}
+            - name: {{ .Values.FileSpecMvn.name }}
+          integrations:
+            - name: {{ .Values.ArtifactoryIntegration }}
+        execution:
+          onStart:
+            - ls -la ${res_{{ .Values.FileSpecMvn.name }}_resourcePath}
+            - echo ${res_{{ .Values.GitRepoContainer.name }}_resourcePath}
+            - ls -la  ${res_{{ .Values.GitRepoContainer.name }}_resourcePath}
+            - cp ${res_{{ .Values.FileSpecMvn.name }}_resourcePath}/multi-module-application-${runVarAppVersion}.jar ${res_{{ .Values.GitRepoContainer.name }}_resourcePath}/complete/CI/Docker/multi-module-application.jar
+            - ls -la ${res_{{ .Values.GitRepoContainer.name }}_resourcePath}/complete/CI/Docker/
+            - add_run_variables runVarGitCommit=${res_{{ .Values.GitRepoContainer.name }}_commitSha}
+            - add_run_variables runBranchName=${res_{{ .Values.GitRepoContainer.name }}_branchName}
+            # - echo $runBranchName
+
+      - name: {{ .Values.DockerPush.stepName | default "publish_backapp_mvn_docker" }} 
+        type: DockerPush
+        configuration:
+          affinityGroup: together
+          targetRepository: {{ .Values.DockerBuild.artifactoryTargetRepoName }}
+          autoPublishBuildInfo: true
+          inputSteps:
+            - name: {{ .Values.DockerBuild.stepName }}
+          integrations:
+            - name: {{ .Values.ArtifactoryIntegration }}
+          outputResources:
+            - name: {{ .Values.BuildInfoContainer.resourceName }}
+        execution:
+          onStart:
+            - export JFROG_CLI_BUILD_URL="${int_{{ .Values.ArtifactoryIntegration }}_url/%artifactory/ui}/pipelines/myPipelines/{{ .Values.BuildInfoContainer.resourceName }}/${run_number}/setup_env?branch=${runBranchName}"
+          onSuccess:
+            - jfrog rt sp --build=${res_{{ .Values.BuildInfoContainer.resourceName }}_buildName}/${run_number} {{ .Values.DockerBuild.artifactoryTargetRepoName }}/{{ .Values.DockerBuild.imageName }}/${runVarAppVersion}/ "app.version=${runVarAppVersion};app.commit.sha=${runVarAppCommitSHA};dockerfile.commit.sha=${runVarGitCommit};app.name=ninja"
+
+      - name: {{ .Values.XrayMvnContainerStepName }}
+        type: XrayScan
+        configuration:
+          failOnScan: false
+          inputResources:
+            - name: {{ .Values.BuildInfoContainer.resourceName }}
+              trigger: true
+
+      - name: {{ .Values.BuildInfoContainerPromotion.resourceName }}
+        type: PromoteBuild
+        configuration:
+          targetRepository: {{ .Values.BuildInfoContainerPromotion.mvnPromoteRepo }} 
+          includeDependencies: {{ .Values.BuildInfoContainerPromotion.includeDependencies }}
+          status: {{ .Values.BuildInfoContainerPromotion.status }}
+          comment: {{ .Values.BuildInfoContainerPromotion.comment }}
+          copy: {{ .Values.BuildInfoContainerPromotion.copy }}
+          inputSteps:
+            - name: {{ .Values.XrayMvnContainerStepName }}
+          inputResources:
+            - name: {{ .Values.BuildInfoContainer.resourceName }}
+          outputResources:
+            - name: {{ .Values.PropertyBagContainer }}
+            - name: {{ .Values.BuildInfoContainerPromotion.resourceName }}
+        execution:  
+          onSuccess:
+            - write_output {{ .Values.PropertyBagContainer }} newTag=${runVarAppVersion}
+            - write_output {{ .Values.PropertyBagContainer }} mvnBINumber=${runVarBINumber}

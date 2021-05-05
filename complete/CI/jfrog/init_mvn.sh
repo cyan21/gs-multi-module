@@ -8,8 +8,6 @@ usage() {
 }
 
 JPD_URL="http://artifactory-eu-yannc3-0.soleng-emea-staging.jfrog.team"
-EDGE1_URL="http://edge-us-yannc3-0.soleng-emea-staging.jfrog.team"
-EDGE2_URL="http://edge-apac-yannc3-0.soleng-emea-staging.jfrog.team"
 
 ADMIN_USER="admin"
 BUILD_NAMES="backapp_mvn,backapp_mvn_docker"  #list with comma as a separator
@@ -19,7 +17,6 @@ while getopts "u:l:e:p:i:v:" option; do
         u) JPD_URL=${OPTARG} ;;
         l) ADMIN_USER=${OPTARG} ;;
         p) ADMIN_PASS=${OPTARG} ;;
-        e) EDGE1_URL=${OPTARG} ;;
         i) ART_ID=${OPTARG} ;;
         v) VIRTUAL_REPO=${OPTARG} ;;
         *) usage && exit 1;;
@@ -37,16 +34,6 @@ echo "[ARTIFACTORY] creating repositories on Artifactory..."
 curl -XPATCH $creds \
     -H "Content-Type: application/yaml" -T repo.yaml \
     $JPD_URL/artifactory/api/system/configuration 
-
-echo "[ARTIFACTORY-EDGE-1] creating repositories on Edge ..."
-curl -XPATCH $creds \
-    -H "Content-Type: application/yaml" -T repo_edge.yaml \
-    $EDGE1_URL/artifactory/api/system/configuration 
-
-# echo "[ARTIFACTORY-EDGE-2] creating repositories on Edge ..."
-# curl -XPATCH $creds \
-#     -H "Content-Type: application/yaml" -T repo_edge.yaml \
-#     $EDGE2_URL/artifactory/api/system/configuration 
 
 # index build
 echo -e "\n[XRAY] indexing builds ... "

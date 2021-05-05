@@ -2,9 +2,8 @@
 ## INPUT 
 ##########################################
 
-MvnRepo: ninja-mvn
-EdgeUrl: 'http://edge-us-yannc3-0.soleng-emea-staging.jfrog.team:80'
-OCIPipeline: false
+MvnRepo: urs-mvn
+
 
 ##########################################
 ## GLOBAL 
@@ -15,7 +14,6 @@ ArtifactoryIntegration: artifactory_eu
 Pipeline:
   mvnNname: backapp_mvn
   mvnContainerName: backapp_mvn_docker
-  # mvnContainerName: backapp_mvn_oci
 
 ##########################################
 ## MVN Pipeline
@@ -26,8 +24,7 @@ GitRepoMvn:
   gitProvider: yann_github
   path: cyan21/gs-multi-module
   branches:
-    exclude: 'master'
-    include: 'demo'
+    include: soleng-stg
   files:
     exclude: '^complete\/CI\/.+'
     include: '^complete\/.+'
@@ -55,7 +52,7 @@ BuildInfoMvnPromotion:
   status: SANDBOX_OK
   comment: Unit testing and Xray scan passed succesfully
   copy: false
-  mvnPromoteRepo: ninja-mvn-rc-local
+  mvnPromoteRepo: urs-mvn-rc-local
 
 FileSpecMvn:
   name: fs_backapp_mvn
@@ -73,8 +70,7 @@ GitRepoContainer:
   gitProvider: yann_github
   path: cyan21/gs-multi-module
   branches:
-    exclude: 'master'
-    include: 'demo'
+    include: soleng-stg
   files:
     include: '^complete\/CI\/Docker\/.+'
 
@@ -82,15 +78,13 @@ PropertyBagContainer: pb_backapp_mvn_container
 
 
 ## DOCKER PIPELINE
-
-
 DockerBuild:
   stepName: backapp_mvn_docker
   dockerFileName: Dockerfile
   dockerFileLocation: complete/CI/Docker/
-  registry: ninja-docker.artifactory-eu-yannc3-0.soleng-emea-staging.jfrog.team:80
+  registry: platform-us.staging.gcp.devopsacc.team
   imageName: backapp-mvn-docker
-  artifactoryTargetRepoName: ninja-docker-dev-local
+  artifactoryTargetRepoName: urs-docker-dev-local
 
 BuildInfoContainer:
   resourceName: bi_backapp_mvn_docker
@@ -104,33 +98,6 @@ BuildInfoContainerPromotion:
   status: SCAN_OK
   comment: Xray scan OK 
   copy: false
-  mvnPromoteRepo: ninja-docker-rc-local
+  mvnPromoteRepo: urs-docker-rc-local
 
 XrayMvnContainerStepName: scan_backapp_mvn_docker
-
-## OCI PIPELINE
-
-# OCIBuild:
-#   stepName: backapp_mvn_oci
-#   dockerFileName: Dockerfile
-#   dockerFileLocation: complete/CI/Docker/
-#   registry: ninja-docker.artifactory-eu-yannc3-0.soleng-emea-staging.jfrog.team:80/
-#   imageName: backapp-mvn
-#   pushImage: true
-#   artifactoryTargetRepoName: ninja-docker-dev-local
-
-# BuildInfoContainer:
-#   resourceName: bi_backapp_mvn_oci
-#   name: backapp_mvn_oci
-#   autoPublishBuildInfo: true
-
-# BuildInfoContainerPromotion:
-#   resourceName: bi_backapp_mvn_oci_promoted
-#   stepName: promote_bi_backapp_mvn_oci
-#   includeDependencies: false
-#   status: SANDBOX_OK
-#   comment: passed my test succesfully
-#   copy: false
-#   mvnPromoteRepo: ninja-docker-rc-local
-
-

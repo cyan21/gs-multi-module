@@ -1,44 +1,44 @@
 localRepositories:   
-  ninja-mvn-dev-local:
+  urs-mvn-dev-local:
     type: maven
     repoLayout: maven-2-default 
     xray:   
       enabled: true
-  ninja-mvn-rc-local:
+  urs-mvn-rc-local:
     type: maven
     repoLayout: maven-2-default 
     xray:   
       enabled: true
-  ninja-mvn-prod-local:
+  urs-mvn-prod-local:
     type: maven
     repoLayout: maven-2-default 
     xray:   
       enabled: true
-  ninja-docker-dev-local:
+  urs-docker-dev-local:
     type: docker
     dockerApiVersion: V2
     repoLayout: simple-default 
     xray:   
       enabled: true
-  ninja-docker-rc-local:
+  urs-docker-rc-local:
     type: docker
     dockerApiVersion: V2
     repoLayout: simple-default 
     xray:   
       enabled: true
-  ninja-debian-release-local:
+  urs-debian-release-local:
     type: debian
     repoLayout: simple-default 
     xray:   
       enabled: true
 remoteRepositories: 
-  ninja-jcenter-remote:
+  urs-jcenter-remote:
     type: maven
     repoLayout: maven-2-default 
     url: https://jcenter.bintray.com 
     xray:   
       enabled: true
-  ninja-dockerhub-remote:
+  urs-dockerhub-remote:
     type: docker 
     url: https://registry-1.docker.io/
     dockerApiVersion: V2
@@ -47,27 +47,21 @@ remoteRepositories:
     xray:   
       enabled: true
 virtualRepositories: 
-  ninja-mvn:
+  urs-mvn:
     type: maven
     repoLayout: maven-2-default
     repositories:
-      - ninja-jcenter-remote
-      - ninja-mvn-dev-local
-      - ninja-mvn-rc-local
-      - ninja-mvn-prod-local
-    defaultDeploymentRepo: ninja-mvn-dev-local
-  ninja-docker:
+      - urs-jcenter-remote
+      - urs-mvn-dev-local
+      - urs-mvn-rc-local
+      - urs-mvn-prod-local
+    defaultDeploymentRepo: urs-mvn-dev-local
+  urs-docker:
     type: docker
     dockerApiVersion: V2
     repoLayout: simple-default 
     repositories:   
-      - ninja-docker-dev-local
-      - ninja-docker-rc-local
-      - ninja-dockerhub-remote
-    defaultDeploymentRepo: ninja-docker-dev-local
-  ninja-debian-release:
-    type: debian
-    repoLayout: simple-default 
-    repositories:   
-      - ninja-debian-release-local
-    defaultDeploymentRepo: ninja-debian-release-local
+      - urs-docker-dev-local
+      - urs-docker-rc-local
+      - urs-dockerhub-remote
+    defaultDeploymentRepo: urs-docker-dev-local
