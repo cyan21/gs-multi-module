@@ -35,3 +35,7 @@ dependency-reduced-pom.xml
 mem*.db
 
 README.html
+
+# CUSTOM
+complete/application/.jfrog_vcsode
+complete/library/.jfrog_vcsode
