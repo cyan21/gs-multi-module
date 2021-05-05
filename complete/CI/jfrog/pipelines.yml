@@ -165,7 +165,7 @@ pipelines:
           dockerFileLocation: {{ .Values.DockerBuild.dockerFileLocation }}
           dockerImageName: "{{ .Values.DockerBuild.registry }}/{{ .Values.DockerBuild.imageName }}"
           dockerImageTag: ${runVarAppVersion}
-          dockerOptions: --build-arg JFROG_CLI_BUILD_URL=${int_{{ .Values.ArtifactoryIntegration }}_url/%artifactory/ui}/pipelines/myPipelines/${pipeline_name}/${run_number}/build_${pipeline_name}?branch=${res_{{ .Values.GitRepoContainer.name }}_branchName
+          dockerOptions: --build-arg JFROG_CLI_BUILD_URL=${int_{{ .Values.ArtifactoryIntegration }}_url/%artifactory/ui}/pipelines/myPipelines/${pipeline_name}/${run_number}/build_${pipeline_name}?branch=${res_{{ .Values.GitRepoContainer.name }}_branchName}
           inputSteps:
             - name: setup_env
           inputResources:
